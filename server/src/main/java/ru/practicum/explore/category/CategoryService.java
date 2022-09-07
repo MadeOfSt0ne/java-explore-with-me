@@ -1,6 +1,6 @@
 package ru.practicum.explore.category;
 
-import ru.practicum.explore.category.CategoryDto.CategoryDto;
+import ru.practicum.explore.category.dto.CategoryDto;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public interface CategoryService {
     void deleteCategory(long catId);
 
     /**
-     * Поиск категории
+     * Получение категории по ее идентификатору
      */
      CategoryDto getCategory(long catId);
 
