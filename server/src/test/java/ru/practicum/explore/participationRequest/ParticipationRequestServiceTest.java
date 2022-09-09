@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.explore.category.Category;
 import ru.practicum.explore.event.Event;
-import ru.practicum.explore.event.interfaces.EventRepository;
+import ru.practicum.explore.event.EventRepository;
 import ru.practicum.explore.participationRequest.dto.ParticipationRequestDto;
 import ru.practicum.explore.user.User;
 import ru.practicum.explore.user.UserRepository;

@@ -18,4 +18,12 @@ public class NewEventDto {
     private int participantLimit;
     private boolean requestModeration;
     private String title;
+    private Location location;
+
+    @Data
+    @AllArgsConstructor
+    static class Location {
+        private float lat;
+        private float lon;
+    }
 }

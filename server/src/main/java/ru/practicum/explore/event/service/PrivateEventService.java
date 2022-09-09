@@ -1,4 +1,4 @@
-package ru.practicum.explore.event.interfaces;
+package ru.practicum.explore.event.service;
 
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventShortDto;

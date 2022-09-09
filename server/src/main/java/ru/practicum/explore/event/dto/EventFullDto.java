@@ -24,6 +24,7 @@ public class EventFullDto {
     private String state;
     private String title;
     private int views;
+    private Location location;
 
     @Data
     @AllArgsConstructor
@@ -37,5 +38,12 @@ public class EventFullDto {
     static class UserShortDto {
         private long id;
         private String name;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Location {
+        private float lat;
+        private float lon;
     }
 }

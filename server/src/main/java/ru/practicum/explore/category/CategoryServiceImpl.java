@@ -9,7 +9,6 @@ import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.CategoryMapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -73,8 +72,6 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDto> getAllCategories(int from, int size) {
         Pageable pageable = PageRequest.of(from, size);
         Page<Category> categories = categoryRepository.findAll(pageable);
-        return categories.stream()
-                .map(CategoryMapper::toCategoryDto)
-                .collect(Collectors.toList());
+        return CategoryMapper.toCategoryDto(categories.toList());
     }
 }

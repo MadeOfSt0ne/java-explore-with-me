@@ -1,4 +1,4 @@
-package ru.practicum.explore.event.interfaces;
+package ru.practicum.explore.event.service;
 
 import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explore.event.dto.EventFullDto;
@@ -10,7 +10,8 @@ public interface AdminEventService {
     /**
      * Метод возвращает полную информацию обо всех событиях подходящих под переданные условия
      */
-    List<EventFullDto> getAllEvents();
+    List<EventFullDto> getAllEvents(int[] users, String[] states, int[] categories, String rangeStart,
+                                    String rangeEnd, int from, int size);
 
     /**
      * Редактирование данных любого события администратором

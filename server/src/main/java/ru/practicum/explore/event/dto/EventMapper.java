@@ -24,7 +24,8 @@ public class EventMapper {
                 event.isRequestModeration(),
                 event.getEventState().toString(),
                 event.getTitle(),
-                0
+                0,
+                new EventFullDto.Location(event.getLat(), event.getLon())
         );
     }
 
@@ -56,7 +57,23 @@ public class EventMapper {
                 newEventDto.getParticipantLimit(),
                 true,
                 EventState.PENDING,
-                newEventDto.getTitle()
+                newEventDto.getTitle(),
+                newEventDto.getLocation().getLat(),
+                newEventDto.getLocation().getLon()
         );
+    }
+
+    public static Event toUpdatedEvent(AdminUpdateEventRequest dto, Category category, Event event) {
+        event.setAnnotation(dto.getAnnotation());
+        event.setCategory(category);
+        event.setDescription(dto.getDescription());
+        event.setEventDate(dto.getEventDate());
+        event.setPaid(dto.isPaid());
+        event.setParticipantLimit(dto.getParticipantLimit());
+        event.setRequestModeration(dto.isRequestModeration());
+        event.setTitle(dto.getTitle());
+        event.setLat(dto.getLocation().getLat());
+        event.setLon(dto.getLocation().getLon());
+        return event;
     }
 }

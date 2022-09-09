@@ -44,4 +44,8 @@ public class Event {
     private EventState eventState;
     @Column(name = "title")
     private String title;
+    @Column(name = "latitude")
+    private float lat;
+    @Column(name = "longitude")
+    private float lon;
 }

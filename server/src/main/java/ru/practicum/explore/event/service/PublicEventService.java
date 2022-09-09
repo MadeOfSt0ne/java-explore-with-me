@@ -1,4 +1,4 @@
-package ru.practicum.explore.event.interfaces;
+package ru.practicum.explore.event.service;
 
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventShortDto;
@@ -10,7 +10,8 @@ public interface PublicEventService {
     /**
      * Получение событий с возможностью фильтрации
      */
-    List<EventShortDto> getEventsFiltered();
+    List<Long> getEventsFiltered(String text, int[] categories, boolean paid, String rangeStart,
+                                          String rangeEnd, boolean onlyAvailable, String sort, int from, int size);
 
     /**
      * Получение подробной информации о событии по его идентификатору

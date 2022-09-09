@@ -3,7 +3,7 @@ package ru.practicum.explore.participationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.event.Event;
-import ru.practicum.explore.event.interfaces.EventRepository;
+import ru.practicum.explore.event.EventRepository;
 import ru.practicum.explore.participationRequest.dto.ParticipationRequestDto;
 import ru.practicum.explore.participationRequest.dto.ParticipationRequestMapper;
 import ru.practicum.explore.user.User;
@@ -42,7 +42,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     public ParticipationRequestDto addNewRequest(long userId, long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         User user = userRepository.findById(userId).orElseThrow();
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String created = LocalDateTime.now().format(formatter);
         ParticipationRequest request = requestRepository.save(
                 new ParticipationRequest(0, event, user, created, RequestStatus.PENDING));

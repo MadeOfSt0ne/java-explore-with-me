@@ -18,7 +18,7 @@ public class CategoryMapper {
         return new Category(categoryDto.getId(), categoryDto.getName());
     }
 
-    public static List<CategoryDto> categoryDto(Collection<Category> categories) {
+    public static List<CategoryDto> toCategoryDto(Collection<Category> categories) {
         List<CategoryDto> dtos = new ArrayList<>();
         for (Category category : categories) {
             dtos.add(toCategoryDto(category));
