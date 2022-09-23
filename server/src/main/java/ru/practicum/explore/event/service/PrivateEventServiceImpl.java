@@ -20,7 +20,6 @@ import ru.practicum.explore.user.User;
 import ru.practicum.explore.user.UserRepository;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,11 +45,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Pageable pageable = PageRequest.of(from, size);
         Page<Event> events = eventRepository.findByInitiatorId(userId, pageable);
         List<EventShortDto> dtos = new ArrayList<>();
-        int confirmed;
         for (Event event : events) {
-            //confirmed = requestRepository.findByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).size();
-            confirmed = requestRepository.countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED);
-            dtos.add(EventMapper.toEventShortDto(event, confirmed));
+            dtos.add(EventMapper.toEventShortDto(event));
         }
         return dtos;
     }
@@ -69,7 +65,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         event.setAnnotation(updateEventRequest.getAnnotation());
         event.setCategory(category);
         event.setDescription(updateEventRequest.getDescription());
-        event.setEventDate(updateEventRequest.getEventDate());
+        event.setEventDate(LocalDateTime.parse(updateEventRequest.getEventDate()));
         event.setPaid(updateEventRequest.isPaid());
         event.setParticipantLimit(updateEventRequest.getParticipantLimit());
         event.setTitle(updateEventRequest.getTitle());
@@ -87,9 +83,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     public EventFullDto addNewEvent(long userId, NewEventDto newEventDto) {
         User initiator = userRepository.findById(userId).orElseThrow();
         Category category = categoryRepository.findById(newEventDto.getCategoryId()).orElseThrow();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String created = LocalDateTime.now().format(formatter);
-        Event newEvent = eventRepository.save(EventMapper.toEvent(newEventDto, initiator, category, created));
+        Event newEvent = eventRepository.save(EventMapper.toEvent(newEventDto, initiator, category));
         return EventMapper.toEventFullDto(newEvent);
     }
 

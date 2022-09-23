@@ -19,6 +19,7 @@ public class EventFullDto {
     private UserShortDto initiator;
     private boolean paid;
     private int participantLimit;
+    private int confirmedRequests;
     private String publishedOn;
     private boolean requestModeration;
     private String state;

@@ -6,6 +6,8 @@ import ru.practicum.explore.event.Event;
 import ru.practicum.explore.event.EventState;
 import ru.practicum.explore.user.User;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 public class EventMapper {
 
@@ -13,14 +15,15 @@ public class EventMapper {
         return new EventFullDto(
                 event.getAnnotation(),
                 new EventFullDto.CategoryDto(event.getCategory().getId(), event.getCategory().getName()),
-                event.getCreatedOn(),
+                event.getCreatedOn().toString(),
                 event.getDescription(),
-                event.getEventDate(),
+                event.getEventDate().toString(),
                 event.getId(),
                 new EventFullDto.UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()),
                 event.isPaid(),
                 event.getParticipantLimit(),
-                event.getPublishedOn(),
+                event.getConfirmedRequests(),
+                event.getPublishedOn() == null ? "Not published yet" : event.getPublishedOn().toString(),
                 event.isRequestModeration(),
                 event.getEventState().toString(),
                 event.getTitle(),
@@ -29,12 +32,12 @@ public class EventMapper {
         );
     }
 
-    public static EventShortDto toEventShortDto(Event event, int confirmedRequests) {
+    public static EventShortDto toEventShortDto(Event event) {
         return new EventShortDto(
                 event.getAnnotation(),
                 new EventShortDto.CategoryDto(event.getCategory().getId(), event.getCategory().getName()),
-                confirmedRequests,
-                event.getEventDate(),
+                event.getConfirmedRequests(),
+                event.getEventDate().toString(),
                 event.getId(),
                 new EventShortDto.UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()),
                 event.isPaid(),
@@ -43,31 +46,28 @@ public class EventMapper {
         );
     }
 
-    public static Event toEvent(NewEventDto newEventDto, User user, Category category, String created) {
-        return new Event(
-                0,
-                user,
-                newEventDto.getAnnotation(),
-                category,
-                newEventDto.getDescription(),
-                created,
-                "NOT PUBLISHED",
-                newEventDto.getEventDate(),
-                newEventDto.isPaid(),
-                newEventDto.getParticipantLimit(),
-                true,
-                EventState.PENDING,
-                newEventDto.getTitle(),
-                newEventDto.getLocation().getLat(),
-                newEventDto.getLocation().getLon()
-        );
+    public static Event toEvent(NewEventDto newEventDto, User user, Category category) {
+        Event event = new Event();
+        event.setInitiator(user);
+        event.setAnnotation(newEventDto.getAnnotation());
+        event.setCategory(category);
+        event.setDescription(newEventDto.getDescription());
+        event.setEventDate(LocalDateTime.parse(newEventDto.getEventDate()));
+        event.setPaid(newEventDto.isPaid());
+        event.setParticipantLimit(newEventDto.getParticipantLimit());
+        event.setRequestModeration(true);
+        event.setEventState(EventState.PENDING);
+        event.setTitle(newEventDto.getTitle());
+        event.setLat(newEventDto.getLocation().getLat());
+        event.setLon(newEventDto.getLocation().getLon());
+        return event;
     }
 
     public static Event toUpdatedEvent(AdminUpdateEventRequest dto, Category category, Event event) {
         event.setAnnotation(dto.getAnnotation());
         event.setCategory(category);
         event.setDescription(dto.getDescription());
-        event.setEventDate(dto.getEventDate());
+        event.setEventDate(LocalDateTime.parse(dto.getEventDate()));
         event.setPaid(dto.isPaid());
         event.setParticipantLimit(dto.getParticipantLimit());
         event.setRequestModeration(dto.isRequestModeration());

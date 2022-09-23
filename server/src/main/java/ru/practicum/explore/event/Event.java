@@ -1,10 +1,12 @@
 package ru.practicum.explore.event;
 
 import lombok.*;
+import org.hibernate.annotations.Formula;
 import ru.practicum.explore.category.Category;
 import ru.practicum.explore.user.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "events")
@@ -29,18 +31,20 @@ public class Event {
     @Column(name = "description")
     private String description;
     @Column(name = "created")
-    private String createdOn;
+    private LocalDateTime createdOn = LocalDateTime.now().withNano(0);
     @Column(name = "published")
-    private String publishedOn;
+    private LocalDateTime publishedOn;
     @Column(name = "event_date")
-    private String eventDate;
+    private LocalDateTime eventDate;
     @Column(name = "paid")
     private boolean paid;
     @Column(name = "participant_limit")
     private int participantLimit;
+    @Formula("(SELECT COUNT(*) FROM participation_request r WHERE r.state = 'APPROVED' AND r.event_id = id)")
+    private int confirmedRequests;
     @Column(name = "request_moderation")
     private boolean requestModeration;
-    @Column(name = "state")
+    @Enumerated(EnumType.STRING)
     private EventState eventState;
     @Column(name = "title")
     private String title;

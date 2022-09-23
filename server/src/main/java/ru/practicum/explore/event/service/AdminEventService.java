@@ -10,7 +10,7 @@ public interface AdminEventService {
     /**
      * Метод возвращает полную информацию обо всех событиях подходящих под переданные условия
      */
-    List<EventFullDto> getAllEvents(int[] users, String[] states, int[] categories, String rangeStart,
+    List<EventFullDto> getAllEvents(Long[] users, String[] states, Integer[] categories, String rangeStart,
                                     String rangeEnd, int from, int size);
 
     /**

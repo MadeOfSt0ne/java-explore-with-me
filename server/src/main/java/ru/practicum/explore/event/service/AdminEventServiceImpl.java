@@ -26,8 +26,11 @@ public class AdminEventServiceImpl implements AdminEventService {
      * Метод возвращает полную информацию обо всех событиях подходящих под переданные условия
      */
     @Override
-    public List<EventFullDto> getAllEvents(int[] users, String[] states, int[] categories, String rangeStart,
+    public List<EventFullDto> getAllEvents(Long[] users, String[] states, Integer[] categories, String rangeStart,
                                            String rangeEnd, int from, int size) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime start = LocalDateTime.parse(rangeStart, formatter);
+        LocalDateTime end = LocalDateTime.parse(rangeEnd, formatter);
         return null;
     }
 
@@ -53,9 +56,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public EventFullDto publishEvent(long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String publishedOn = LocalDateTime.now().format(formatter);
-        event.setPublishedOn(publishedOn);
+        event.setPublishedOn(LocalDateTime.now().withNano(0));;
         event.setEventState(EventState.PUBLISHED);
         Event published = eventRepository.save(event);
         return EventMapper.toEventFullDto(published);

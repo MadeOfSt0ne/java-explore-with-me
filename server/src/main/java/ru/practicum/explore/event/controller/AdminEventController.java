@@ -19,9 +19,9 @@ public class AdminEventController {
 
     @GetMapping
     public List<EventFullDto> getAllEvents(
-            @RequestParam(value = "users") int[] users,
+            @RequestParam(value = "users") Long[] users,
             @RequestParam(value = "states") String[] states,
-            @RequestParam(value = "categories") int[] categories,
+            @RequestParam(value = "categories") Integer[] categories,
             @RequestParam(value = "rangeStart") String rangeStart,
             @RequestParam(value = "rangeEnd") String rangeEnd,
             @RequestParam(value = "from", required = false, defaultValue = "0") int from,

@@ -23,7 +23,6 @@ public class Compilation {
     @Column(name = "title")
     private String title;
     @OneToMany
-    @JoinColumn(name = "event_id")
     @ToString.Exclude
     private Set<Event> events;
 }
