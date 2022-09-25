@@ -7,6 +7,7 @@ import ru.practicum.explore.event.EventState;
 import ru.practicum.explore.user.User;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @NoArgsConstructor
 public class EventMapper {
@@ -27,7 +28,7 @@ public class EventMapper {
                 event.isRequestModeration(),
                 event.getEventState().toString(),
                 event.getTitle(),
-                0,
+                event.getViews(),
                 new EventFullDto.Location(event.getLat(), event.getLon())
         );
     }
@@ -42,17 +43,18 @@ public class EventMapper {
                 new EventShortDto.UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()),
                 event.isPaid(),
                 event.getTitle(),
-                0
+                event.getViews()
         );
     }
 
     public static Event toEvent(NewEventDto newEventDto, User user, Category category) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Event event = new Event();
         event.setInitiator(user);
         event.setAnnotation(newEventDto.getAnnotation());
         event.setCategory(category);
         event.setDescription(newEventDto.getDescription());
-        event.setEventDate(LocalDateTime.parse(newEventDto.getEventDate()));
+        event.setEventDate(LocalDateTime.parse(newEventDto.getEventDate(), formatter));
         event.setPaid(newEventDto.isPaid());
         event.setParticipantLimit(newEventDto.getParticipantLimit());
         event.setRequestModeration(true);

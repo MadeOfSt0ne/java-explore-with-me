@@ -25,9 +25,12 @@ import java.util.stream.Collectors;
 public class PublicEventServiceImpl implements PublicEventService {
 
     private final EventRepository eventRepository;
+    private final ViewsProcessor viewsProcessor;
 
     /**
      * Получение событий с возможностью фильтрации
+     *
+     * @param request объект, содержащий параметры запроса
      */
     @Override
     @Transactional(readOnly = true)
@@ -42,7 +45,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         // Если список идентификаторов категорий не пустой, то добавляем в условия
         if (request.getCategories().size() != 0) {
             for (Integer catId : request.getCategories()) {
-                conditions.add(event.category.id.eq(catId.longValue()));
+                conditions.add(event.category.id.eq(Long.valueOf(catId)));
             }
         }
         // Если участие в событии платное, то ставим флаг true
@@ -58,20 +61,35 @@ public class PublicEventServiceImpl implements PublicEventService {
                 .reduce(BooleanExpression::and)
                 .get();
         Pageable pageable = PageRequest.of(request.getFrom(), request.getSize());
+        // Делаем запрос в базу
         Page<Event> events = eventRepository.findAll(finalCondition, pageable);
-
-
+        // Проставляем всем событиям просмотры
+        events.forEach(e -> e.setViews(viewsProcessor.getViews(e.getId())));
+        // Если нужны только имеющие свободные места, то добавряем фильтр на свободные места
+        if (request.isOnlyAvailable()) {
+            return events.stream()
+                    .filter(e -> e.getParticipantLimit() > e.getConfirmedRequests())
+                    .sorted(getComparator(request.getSort().toLowerCase()))
+                    .map(EventMapper::toEventShortDto)
+                    .collect(Collectors.toList());
+        }
         return events.stream()
-                .sorted(getComparator(request))
-                .map(EventMapper::toEventShortDto)
-                .collect(Collectors.toList());
+                    .sorted(getComparator(request.getSort().toLowerCase()))
+                    .map(EventMapper::toEventShortDto)
+                    .collect(Collectors.toList());
     }
 
-    private Comparator<Event> getComparator(PublicEventsRequest request) {
-        if (request.getSort().equals(PublicEventsRequest.Sort.VIEWS)) {
-            return Comparator.comparing(Event::getEventDate);
-        } else {
-            return Comparator.comparing(Event::getEventDate);
+    /**
+     * Метод возвращает компаратор в зависимости от выбранного типа сортировки
+     *
+     * @param sort способ сортировки
+     * @throws IllegalArgumentException если тип сортировки не найден
+     */
+    private Comparator<Event> getComparator(String sort) {
+        switch (sort) {
+            case ("views") : return Comparator.comparing(Event::getViews);
+            case ("event_date") : return Comparator.comparing(Event::getEventDate);
+            default: throw new IllegalArgumentException("Unknown sort: " + sort + ".");
         }
     }
 
@@ -83,6 +101,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     @Override
     public EventFullDto getEvent(long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
+        event.setViews(viewsProcessor.getViews(eventId));
         return EventMapper.toEventFullDto(event);
     }
 }

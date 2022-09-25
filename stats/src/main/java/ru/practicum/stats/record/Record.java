@@ -21,7 +21,7 @@ public class Record {
     @Column(name = "ip")
     private String ip;
     @Column(name = "timestamp")
-    private LocalDateTime timestamp = LocalDateTime.now().plusNanos(0);
+    private LocalDateTime timestamp = LocalDateTime.now().withNano(0);
     @Column(name = "uri")
     private String uri;
 }

@@ -31,6 +31,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ParticipationRequestRepository requestRepository;
+    private final ViewsProcessor viewsProcessor;
 
     /**
      * Получение событий, добавленных текущим пользователем
@@ -44,6 +45,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         User initiator = userRepository.findById(userId).orElseThrow();
         Pageable pageable = PageRequest.of(from, size);
         Page<Event> events = eventRepository.findByInitiatorId(userId, pageable);
+        events.forEach(e -> e.setViews(viewsProcessor.getViews(e.getId())));
         List<EventShortDto> dtos = new ArrayList<>();
         for (Event event : events) {
             dtos.add(EventMapper.toEventShortDto(event));
@@ -97,6 +99,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     public EventFullDto getEvent(long userId, long eventId) {
         User initiator = userRepository.findById(userId).orElseThrow();
         Event event = eventRepository.findById(eventId).orElseThrow();
+        event.setViews(viewsProcessor.getViews(eventId));
         return EventMapper.toEventFullDto(event);
     }
 
@@ -111,6 +114,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         User initiator = userRepository.findById(userId).orElseThrow();
         Event event = eventRepository.findById(eventId).orElseThrow();
         event.setEventState(EventState.CANCELLED);
+        event.setViews(viewsProcessor.getViews(eventId));
         Event cancelled = eventRepository.save(event);
         return EventMapper.toEventFullDto(cancelled);
     }

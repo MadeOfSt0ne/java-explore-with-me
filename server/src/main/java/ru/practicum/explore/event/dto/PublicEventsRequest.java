@@ -17,7 +17,7 @@ public class PublicEventsRequest {
     private LocalDateTime rangeStart;
     private LocalDateTime rangeEnd;
     private boolean onlyAvailable;
-    private Sort sort;
+    private String sort;
     private int from;
     private int size;
 
@@ -31,13 +31,9 @@ public class PublicEventsRequest {
         request.setRangeStart(rangeStart.equals("NULL") ? LocalDateTime.now() : LocalDateTime.parse(rangeStart, formatter));
         request.setRangeEnd(rangeEnd.equals("NULL") ? LocalDateTime.now().plusYears(1) : LocalDateTime.parse(rangeEnd, formatter));
         request.setOnlyAvailable(onlyAvailable);
-        request.setSort(Sort.valueOf(sort.toUpperCase()));
+        request.setSort(sort);
         request.setFrom(from);
         request.setSize(size);
         return request;
-    }
-
-    public enum Sort {
-        EVENT_DATE, VIEWS
     }
 }

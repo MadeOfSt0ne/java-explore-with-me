@@ -8,6 +8,14 @@ import java.util.List;
 
 public interface RecordRepository extends JpaRepository<Record, Long>, QuerydslPredicateExecutor<Record> {
 
-    List<Record> findByTimestampBetweenAndUriIsIn(LocalDateTime start, LocalDateTime end, List<String> uri);
+    /**
+     * Получение записей за определенный промежуток времени
+     */
+    List<Record> findByTimestampBetween(LocalDateTime start, LocalDateTime end);
+
+    /**
+     * Получение записей за определенный промежуток времени по выбранным uri
+     */
+    List<Record> findByTimestampBetweenAndUriIsIn(LocalDateTime start, LocalDateTime end, List<String> uris);
 }
 

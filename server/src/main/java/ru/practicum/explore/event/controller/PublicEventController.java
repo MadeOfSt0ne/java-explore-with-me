@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.PublicEventsRequest;
+import ru.practicum.explore.event.service.EventClient;
 import ru.practicum.explore.event.service.PublicEventService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import java.util.List;
 public class PublicEventController {
 
     private final PublicEventService eventService;
+    private final EventClient eventClient;
 
     @GetMapping
     public List<EventShortDto> getEventsFiltered(
@@ -35,6 +37,8 @@ public class PublicEventController {
                 "onlyAvailable={}, sort={}, from={}, size={}", text, categories, paid, rangeStart, rangeEnd,
                 onlyAvailable, sort, from, size);
         log.info("Client ip={}, endpoint path={}", request.getRemoteAddr(), request.getRequestURI());
+        // Отправка статистики
+        eventClient.makeAndSendEndpointHit("GetEventsFiltered", request);
         return eventService.getEventsFiltered(PublicEventsRequest.of(text, categories, paid, rangeStart, rangeEnd,
                 onlyAvailable, sort, from, size));
     }
@@ -43,6 +47,8 @@ public class PublicEventController {
     public EventFullDto getEvent(@PathVariable long id, HttpServletRequest request) {
         log.info("PUBLIC: Get event id={}", id);
         log.info("Client ip={}, endpoint path={}", request.getRemoteAddr(), request.getRequestURI());
+        // Отправка статистики
+        eventClient.makeAndSendEndpointHit("GetEventById", request);
         return eventService.getEvent(id);
     }
 }

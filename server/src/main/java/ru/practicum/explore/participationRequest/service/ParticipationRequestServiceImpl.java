@@ -12,8 +12,6 @@ import ru.practicum.explore.participationRequest.dto.ParticipationRequestMapper;
 import ru.practicum.explore.user.User;
 import ru.practicum.explore.user.UserRepository;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -45,11 +43,11 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     public ParticipationRequestDto addNewRequest(long userId, long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         User user = userRepository.findById(userId).orElseThrow();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String created = LocalDateTime.now().format(formatter);
-        ParticipationRequest request = requestRepository.save(
-                new ParticipationRequest(0, event, user, created, RequestStatus.PENDING));
-        return ParticipationRequestMapper.toParticipationRequestDto(request);
+        ParticipationRequest request = new ParticipationRequest();
+        request.setRequester(user);
+        request.setEvent(event);
+        request.setStatus(RequestStatus.PENDING);
+        return ParticipationRequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }
 
     /**

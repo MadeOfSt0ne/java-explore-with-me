@@ -1,15 +1,18 @@
 package ru.practicum.stats.record;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.stats.record.dto.EndpointHit;
 import ru.practicum.stats.record.dto.RecordMapper;
 import ru.practicum.stats.record.dto.ViewStats;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,6 +21,9 @@ import java.util.List;
 public class RecordServiceImpl implements RecordService {
 
     private final RecordRepository recordRepository;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+
+    private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Сохранение информации о том, что к эндпоинту был запрос
@@ -40,29 +46,31 @@ public class RecordServiceImpl implements RecordService {
     @Override
     @Transactional(readOnly = true)
     public List<ViewStats> getRecords(String start, String end, String[] uris, boolean unique) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime from = LocalDateTime.parse(start, formatter);
-        LocalDateTime to = LocalDateTime.parse(end, formatter);
-        List<String> uri = Arrays.asList(uris);
-        List<Record> records = recordRepository.findByTimestampBetweenAndUriIsIn(from, to, uri);
+        LocalDateTime from = LocalDateTime.parse(start, FORMATTER);
+        LocalDateTime to = LocalDateTime.parse(end, FORMATTER);
+        List<String> uriList = Arrays.asList(uris);
 
-        /*QRecord record = QRecord.record;
-        List<BooleanExpression> conditions = new ArrayList<>();
-        conditions.add(record.timestamp.between(from, to));
-        for (String s : uris) {
-            conditions.add(record.uri.eq(s));
-        }
-        BooleanExpression finalCondition = conditions.stream()
-                .reduce(BooleanExpression::and)
-                .get();
-        Iterable<Record> records = recordRepository.findAll(finalCondition);
-        List<Record> result = new ArrayList<>();
-        for (Record r : records) {
-            result.add(r);
-        }
-        if (unique) {
-            result = result.stream().distinct().collect(Collectors.toList());
-        }*/
-        return new ArrayList<>();
+        String sqlQuery = "SELECT app, uri, count(hits) as hits " +
+                "FROM (Select Distinct app, uri, 1 as hits FROM records r " +
+                "where r.uri IN (:uris) and date_hit Between :start and :end) as p " +
+                "group by p.app, p.uri";
+
+        MapSqlParameterSource paramSource = new MapSqlParameterSource();
+        paramSource.addValue("start", from);
+        paramSource.addValue("end", to);
+        paramSource.addValue("uris", uriList);
+
+        return jdbcTemplate.query(
+                unique ? sqlQuery : sqlQuery.replace("Distinct", ""),
+                paramSource,
+                (rs, rowNum) -> makeViewStats(rs));
+    }
+
+    private ViewStats makeViewStats(ResultSet rs) throws SQLException {
+        ViewStats viewStats = new ViewStats();
+        viewStats.setApp(rs.getString("app"));
+        viewStats.setUri(rs.getString("uri"));
+        viewStats.setHits(rs.getInt("hits"));
+        return viewStats;
     }
 }

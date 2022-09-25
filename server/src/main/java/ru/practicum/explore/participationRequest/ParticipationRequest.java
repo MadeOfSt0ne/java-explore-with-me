@@ -5,6 +5,7 @@ import ru.practicum.explore.event.Event;
 import ru.practicum.explore.user.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "participation_requests")
@@ -25,7 +26,7 @@ public class ParticipationRequest {
     @JoinColumn(name = "requester_id")
     private User requester;
     @Column(name = "created")
-    private String created;
+    private LocalDateTime created = LocalDateTime.now().withNano(0);
     @Enumerated(EnumType.STRING)
     private RequestStatus status;
 }

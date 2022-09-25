@@ -13,8 +13,4 @@ public class RecordMapper {
         record.setUri(hit.getUri());
         return record;
     }
-
-    public static ViewStats toViewStats(Record record, int hits) {
-        return new ViewStats(record.getApp(), record.getUri(), hits);
-    }
 }

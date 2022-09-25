@@ -42,7 +42,8 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
     public ErrorResponse handleDateTimeParseException(final DateTimeParseException e) {
-        return new ErrorResponse(e.getMessage(), "Wrong datetime format.", ErrorStatus._418_I_AM_A_TEAPOT);
+        return new ErrorResponse(e.getMessage(), "Wrong datetime format. Use yyyy-MM-dd HH:mm:ss instead.",
+                ErrorStatus._418_I_AM_A_TEAPOT);
     }
 
     @ExceptionHandler

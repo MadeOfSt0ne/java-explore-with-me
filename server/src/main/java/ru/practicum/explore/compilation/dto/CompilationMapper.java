@@ -33,11 +33,10 @@ public class CompilationMapper {
     }
 
     public static Compilation toCompilation(NewCompilationDto newCompDto, Set<Event> events) {
-        return new Compilation(
-                0,
-                newCompDto.isPinned(),
-                newCompDto.getTitle(),
-                events
-        );
+        Compilation compilation = new Compilation();
+        compilation.setPinned(newCompDto.isPinned());
+        compilation.setTitle(newCompDto.getTitle());
+        compilation.setEvents(events);
+        return compilation;
     }
 }

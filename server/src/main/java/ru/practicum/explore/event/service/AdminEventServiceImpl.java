@@ -1,19 +1,26 @@
 package ru.practicum.explore.event.service;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.category.Category;
 import ru.practicum.explore.category.CategoryRepository;
 import ru.practicum.explore.event.Event;
 import ru.practicum.explore.event.EventRepository;
 import ru.practicum.explore.event.EventState;
+import ru.practicum.explore.event.QEvent;
 import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventMapper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +28,9 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final CategoryRepository catRepository;
+    private final ViewsProcessor viewsProcessor;
+
+    private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Метод возвращает полную информацию обо всех событиях подходящих под переданные условия
@@ -28,10 +38,54 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public List<EventFullDto> getAllEvents(Long[] users, String[] states, Integer[] categories, String rangeStart,
                                            String rangeEnd, int from, int size) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime start = LocalDateTime.parse(rangeStart, formatter);
-        LocalDateTime end = LocalDateTime.parse(rangeEnd, formatter);
-        return null;
+        // Дефолтных значений нет в спецификации, так что придумал сам
+        LocalDateTime start = (rangeStart == null ? LocalDateTime.now().minusMonths(1) : LocalDateTime.parse(rangeStart, FORMATTER));
+        LocalDateTime end = (rangeEnd == null ? LocalDateTime.now().plusMonths(1) : LocalDateTime.parse(rangeEnd, FORMATTER));
+        QEvent event = QEvent.event;
+        List<BooleanExpression> conditions = new ArrayList<>();
+        conditions.add(event.eventDate.between(start, end));
+        // Если получен список id инициаторов, то включаем их в параметры поиска
+        if (users != null) {
+            for (Long id : users) {
+                conditions.add(event.initiator.id.eq(id));
+            }
+        }
+        // Если получен список состояний, то включаем их в поиск
+        if (states != null) {
+            for (String state : states) {
+                EventState eventState = getState(state.toLowerCase());
+                conditions.add(event.eventState.eq(eventState));
+            }
+        }
+        // Если получен список id категорий, то включаем их в поиск
+        if (categories != null) {
+            for (Integer catId : categories) {
+                conditions.add(event.category.id.eq(Long.valueOf(catId)));
+            }
+        }
+        BooleanExpression finalCondition = conditions.stream()
+                .reduce(BooleanExpression::and)
+                .get();
+        Pageable pageable = PageRequest.of(from, size);
+        Page<Event> events = eventRepository.findAll(finalCondition, pageable);
+        events.forEach(e -> e.setViews(viewsProcessor.getViews(e.getId())));
+        return events.stream()
+                .map(EventMapper::toEventFullDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Метод принимает строку с названием статуса и возвращает соответствующий статус
+     *
+     * @throws IllegalArgumentException если статус не найден
+     */
+    private EventState getState(String state) {
+        switch (state) {
+            case ("pending") : return EventState.PENDING;
+            case ("published") : return EventState.PUBLISHED;
+            case ("cancelled") : return EventState.CANCELLED;
+            default: throw new IllegalArgumentException("Unknown state: " + state + ".");
+        }
     }
 
     /**
@@ -43,6 +97,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public EventFullDto editEvent(long eventId, AdminUpdateEventRequest eventRequest) {
         Event event = eventRepository.findById(eventId).orElseThrow();
+        event.setViews(viewsProcessor.getViews(eventId));
         Category category = catRepository.findById(eventRequest.getCategoryId()).orElseThrow();
         Event updated = eventRepository.save(EventMapper.toUpdatedEvent(eventRequest, category, event));
         return EventMapper.toEventFullDto(updated);
@@ -56,7 +111,8 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public EventFullDto publishEvent(long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
-        event.setPublishedOn(LocalDateTime.now().withNano(0));;
+        event.setViews(viewsProcessor.getViews(eventId));
+        event.setPublishedOn(LocalDateTime.now().withNano(0));
         event.setEventState(EventState.PUBLISHED);
         Event published = eventRepository.save(event);
         return EventMapper.toEventFullDto(published);
@@ -70,6 +126,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public EventFullDto rejectEvent(long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
+        event.setViews(viewsProcessor.getViews(eventId));
         event.setEventState(EventState.CANCELLED);
         Event rejected = eventRepository.save(event);
         return EventMapper.toEventFullDto(rejected);

@@ -40,7 +40,7 @@ public class Event {
     private boolean paid;
     @Column(name = "participant_limit")
     private int participantLimit;
-    @Formula("(SELECT COUNT(*) FROM participation_request r WHERE r.state = 'APPROVED' AND r.event_id = id)")
+    @Formula("SELECT COUNT(*) FROM participation_request r WHERE r.state = 'APPROVED' AND r.event_id = id")
     private int confirmedRequests;
     @Column(name = "request_moderation")
     private boolean requestModeration;
@@ -52,4 +52,5 @@ public class Event {
     private float lat;
     @Column(name = "longitude")
     private float lon;
+    private int views;
 }
