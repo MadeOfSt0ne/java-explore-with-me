@@ -23,7 +23,7 @@ public class RecordServiceImpl implements RecordService {
     private final RecordRepository recordRepository;
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Сохранение информации о том, что к эндпоинту был запрос
