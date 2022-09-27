@@ -9,6 +9,7 @@ import ru.practicum.explore.category.Category;
 import ru.practicum.explore.category.CategoryRepository;
 import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.CategoryMapper;
+import ru.practicum.explore.event.EventRepository;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class CategoryServiceImpl implements AdminCategoryService, PublicCategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
 
     /**
      * Добавление новой категории
@@ -46,9 +48,13 @@ public class CategoryServiceImpl implements AdminCategoryService, PublicCategory
      * Удаление категории
      *
      * @param catId id категории
+     * @throws IllegalStateException если с категорией связано хотя бы одно событие
      */
     @Override
     public void deleteCategory(long catId) {
+        if (eventRepository.findAllByCategoryId(catId).size() != 0) {
+            throw new IllegalStateException();
+        }
         categoryRepository.deleteById(catId);
     }
 

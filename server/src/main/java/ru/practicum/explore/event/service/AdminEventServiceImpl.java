@@ -30,7 +30,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final CategoryRepository catRepository;
     private final ViewsProcessor viewsProcessor;
 
-    private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Метод возвращает полную информацию обо всех событиях подходящих под переданные условия
@@ -69,6 +69,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         Pageable pageable = PageRequest.of(from, size);
         Page<Event> events = eventRepository.findAll(finalCondition, pageable);
         events.forEach(e -> e.setViews(viewsProcessor.getViews(e.getId())));
+
         return events.stream()
                 .map(EventMapper::toEventFullDto)
                 .collect(Collectors.toList());
@@ -107,10 +108,16 @@ public class AdminEventServiceImpl implements AdminEventService {
      * Публикация события
      *
      * @param eventId id события
+     * @throws IllegalStateException если событие не находится в состоянии ожидания публикации или время начала раньше,
+     * чем через час от времени публикации
      */
     @Override
     public EventFullDto publishEvent(long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
+        if (!event.getEventState().equals(EventState.PENDING)
+                || event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+            throw new IllegalStateException();
+        }
         event.setViews(viewsProcessor.getViews(eventId));
         event.setPublishedOn(LocalDateTime.now().withNano(0));
         event.setEventState(EventState.PUBLISHED);
@@ -122,10 +129,14 @@ public class AdminEventServiceImpl implements AdminEventService {
      * Отклонение события
      *
      * @param eventId id события
+     * @throws IllegalStateException если событие не находится в состоянии ожидания публикации
      */
     @Override
     public EventFullDto rejectEvent(long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
+        if (!event.getEventState().equals(EventState.PENDING)) {
+            throw new IllegalStateException();
+        }
         event.setViews(viewsProcessor.getViews(eventId));
         event.setEventState(EventState.CANCELLED);
         Event rejected = eventRepository.save(event);

@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateEventRequest {
     private String annotation;
-    private long categoryId;
+    private Long categoryId;
     private String description;
     private String eventDate;
     private long eventId;
-    private boolean paid;
-    private int participantLimit;
+    private Boolean paid;
+    private Integer participantLimit;
     private String title;
 }

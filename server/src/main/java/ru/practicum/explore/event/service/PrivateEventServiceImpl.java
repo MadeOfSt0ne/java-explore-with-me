@@ -20,6 +20,7 @@ import ru.practicum.explore.user.User;
 import ru.practicum.explore.user.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final UserRepository userRepository;
     private final ParticipationRequestRepository requestRepository;
     private final ViewsProcessor viewsProcessor;
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Получение событий, добавленных текущим пользователем
@@ -58,19 +61,42 @@ public class PrivateEventServiceImpl implements PrivateEventService {
      *
      * @param userId id пользователя
      * @param updateEventRequest dto события
+     * @throws IllegalStateException если событие уже опубликовано или время начала раньше, чем через 2 часа от
+     * текущего момента
      */
     @Override
     public EventFullDto updateEvent(long userId, UpdateEventRequest updateEventRequest) {
         User initiator = userRepository.findById(userId).orElseThrow();
         Event event = eventRepository.findById(updateEventRequest.getEventId()).orElseThrow();
-        Category category = categoryRepository.findById(updateEventRequest.getCategoryId()).orElseThrow();
-        event.setAnnotation(updateEventRequest.getAnnotation());
-        event.setCategory(category);
-        event.setDescription(updateEventRequest.getDescription());
-        event.setEventDate(LocalDateTime.parse(updateEventRequest.getEventDate()));
-        event.setPaid(updateEventRequest.isPaid());
-        event.setParticipantLimit(updateEventRequest.getParticipantLimit());
-        event.setTitle(updateEventRequest.getTitle());
+        if (event.getEventState().equals(EventState.PUBLISHED) ||
+                event.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            throw new IllegalStateException();
+        }
+        if (updateEventRequest.getCategoryId() != null) {
+            Category category = categoryRepository.findById(updateEventRequest.getCategoryId()).orElseThrow();
+            event.setCategory(category);
+        }
+        if (updateEventRequest.getAnnotation() != null) {
+            event.setAnnotation(updateEventRequest.getAnnotation());
+        }
+        if (updateEventRequest.getDescription() != null) {
+            event.setDescription(updateEventRequest.getDescription());
+        }
+        if (updateEventRequest.getEventDate() != null) {
+            event.setEventDate(LocalDateTime.parse(updateEventRequest.getEventDate(), FORMATTER));
+        }
+        if (updateEventRequest.getPaid() != null) {
+            event.setPaid(updateEventRequest.getPaid());
+        }
+        if (updateEventRequest.getParticipantLimit() != null) {
+            event.setParticipantLimit(updateEventRequest.getParticipantLimit());
+        }
+        if (updateEventRequest.getTitle() != null) {
+            event.setTitle(updateEventRequest.getTitle());
+        }
+        if (event.getEventState().equals(EventState.CANCELLED)) {
+            event.setEventState(EventState.PENDING);
+        }
         Event updated = eventRepository.save(event);
         return EventMapper.toEventFullDto(updated);
     }
@@ -80,12 +106,19 @@ public class PrivateEventServiceImpl implements PrivateEventService {
      *
      * @param userId id пользователя
      * @param newEventDto dto события
+     * @throws IllegalStateException если время начала события раньше, чем через 2 часа от текущего момента
      */
     @Override
     public EventFullDto addNewEvent(long userId, NewEventDto newEventDto) {
+        if (newEventDto.getEventDate() == null) {
+            throw new IllegalStateException();
+        }
         User initiator = userRepository.findById(userId).orElseThrow();
         Category category = categoryRepository.findById(newEventDto.getCategoryId()).orElseThrow();
         Event newEvent = eventRepository.save(EventMapper.toEvent(newEventDto, initiator, category));
+        if (newEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            throw new IllegalStateException();
+        }
         return EventMapper.toEventFullDto(newEvent);
     }
 
@@ -94,11 +127,15 @@ public class PrivateEventServiceImpl implements PrivateEventService {
      *
      * @param userId id пользователя
      * @param eventId id события
+     * @throws IllegalStateException если пользователь не является инициатором события
      */
     @Override
     public EventFullDto getEvent(long userId, long eventId) {
         User initiator = userRepository.findById(userId).orElseThrow();
         Event event = eventRepository.findById(eventId).orElseThrow();
+        if (event.getInitiator().getId() != userId) {
+            throw new IllegalStateException();
+        }
         event.setViews(viewsProcessor.getViews(eventId));
         return EventMapper.toEventFullDto(event);
     }
@@ -108,11 +145,19 @@ public class PrivateEventServiceImpl implements PrivateEventService {
      *
      * @param userId id пользователя
      * @param eventId id события
+     * @throws IllegalStateException если событие уже опубликовано или отменено
+     * или если пользователь не является инициатором события
      */
     @Override
     public EventFullDto cancelEvent(long userId, long eventId) {
         User initiator = userRepository.findById(userId).orElseThrow();
         Event event = eventRepository.findById(eventId).orElseThrow();
+        if (event.getInitiator().getId() != userId) {
+            throw new IllegalStateException();
+        }
+        if (!event.getEventState().equals(EventState.PENDING)) {
+            throw new IllegalStateException();
+        }
         event.setEventState(EventState.CANCELLED);
         event.setViews(viewsProcessor.getViews(eventId));
         Event cancelled = eventRepository.save(event);
@@ -124,10 +169,15 @@ public class PrivateEventServiceImpl implements PrivateEventService {
      *
      * @param userId id пользователя
      * @param eventId id события
+     * @throws IllegalStateException если пользователь не является инициатором события
      */
     @Override
     public List<ParticipationRequestDto> getRequests(long userId, long eventId) {
         User initiator = userRepository.findById(userId).orElseThrow();
+        Event event = eventRepository.findById(eventId).orElseThrow();
+        if (initiator.getId() != event.getInitiator().getId()) {
+            throw new IllegalStateException();
+        }
         List<ParticipationRequest> requests = requestRepository.findByEventId(eventId);
         return ParticipationRequestMapper.toParticipationRequestDto(requests);
     }
@@ -135,16 +185,29 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     /**
      * Подтверждение чужой заявки на участие в событии текущего пользователя
      *
-     * @param userId id пользователя
+     * @param userId id инициатора события
      * @param eventId id события
      * @param requestId id запроса на участие в событии
+     * @throws IllegalStateException если пользователь не является инициатором события
      */
     @Override
     public ParticipationRequestDto confirmRequest(long userId, long eventId, long requestId) {
         User initiator = userRepository.findById(userId).orElseThrow();
+        Event event = eventRepository.findById(eventId).orElseThrow();
+        if (initiator.getId() != event.getInitiator().getId()) {
+            throw new IllegalStateException();
+        }
+        if (event.getParticipantLimit() != 0 && event.getConfirmedRequests() == event.getParticipantLimit()) {
+            throw new IllegalStateException();
+        }
         ParticipationRequest request = requestRepository.findById(requestId).orElseThrow();
         request.setStatus(RequestStatus.CONFIRMED);
         ParticipationRequest confirmed = requestRepository.save(request);
+        // Если лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
+        if (event.getConfirmedRequests() == event.getParticipantLimit()) {
+            List<ParticipationRequest> requests = requestRepository.findByEventId(eventId);
+            requests.forEach(r -> r.setStatus(RequestStatus.CANCELLED));
+        }
         return ParticipationRequestMapper.toParticipationRequestDto(confirmed);
     }
 

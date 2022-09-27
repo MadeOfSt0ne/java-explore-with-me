@@ -2,7 +2,7 @@ package ru.practicum.explore.event.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.stats.record.dto.ViewStats;
+import ru.practicum.explore.client.ViewStats;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +14,7 @@ public class ViewsProcessor {
 
     private final EventClient eventClient;
 
-    private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Метод отправляет запрос в сервис статистики и возвращает количество просмотров

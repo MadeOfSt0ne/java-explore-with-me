@@ -83,7 +83,7 @@ public class CompilationServiceImpl implements AdminCompilationService, PublicCo
     public void deleteEventFromCompilation(long compId, long eventId) {
         Compilation comp = compRepository.findById(compId).orElseThrow();
         Event deletedEvent = eventRepository.findById(eventId).orElseThrow();
-        comp.getEvents().remove(deletedEvent);
+        comp.getEvents().removeIf(e -> e.getId() == eventId);
         compRepository.save(comp);
     }
 

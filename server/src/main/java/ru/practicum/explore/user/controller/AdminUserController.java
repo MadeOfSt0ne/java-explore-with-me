@@ -22,7 +22,7 @@ public class AdminUserController {
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers(@RequestParam(value = "ids", required = false, defaultValue = "new int[0]") int[] ids,
+    public List<UserDto> getAllUsers(@RequestParam(value = "ids", required = false) Long[] ids,
                                      @RequestParam(value = "from", required = false, defaultValue = "0") int from,
                                      @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
         log.info("ADMIN: Get users with ids={}", ids);

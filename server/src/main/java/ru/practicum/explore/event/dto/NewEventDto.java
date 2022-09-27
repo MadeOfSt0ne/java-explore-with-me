@@ -22,7 +22,7 @@ public class NewEventDto {
 
     @Data
     @AllArgsConstructor
-    static class Location {
+    public static class Location {
         private float lat;
         private float lon;
     }

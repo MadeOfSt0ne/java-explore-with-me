@@ -12,22 +12,24 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 public class EventMapper {
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public static EventFullDto toEventFullDto(Event event) {
         return new EventFullDto(
-                event.getAnnotation(),
+                event.getAnnotation() == null ? "no annotation" : event.getAnnotation(),
                 new EventFullDto.CategoryDto(event.getCategory().getId(), event.getCategory().getName()),
-                event.getCreatedOn().toString(),
-                event.getDescription(),
-                event.getEventDate().toString(),
+                event.getCreatedOn() == null ? "null" : event.getCreatedOn().format(FORMATTER),
+                event.getDescription() == null ? "no description" : event.getDescription(),
+                event.getEventDate() == null ? "null" : event.getEventDate().format(FORMATTER),
                 event.getId(),
                 new EventFullDto.UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()),
                 event.isPaid(),
                 event.getParticipantLimit(),
                 event.getConfirmedRequests(),
-                event.getPublishedOn() == null ? "Not published yet" : event.getPublishedOn().toString(),
+                event.getPublishedOn() == null ? "Not published yet" : event.getPublishedOn().format(FORMATTER),
                 event.isRequestModeration(),
                 event.getEventState().toString(),
-                event.getTitle(),
+                event.getTitle() == null ? "no title" : event.getTitle(),
                 event.getViews(),
                 new EventFullDto.Location(event.getLat(), event.getLon())
         );
@@ -48,13 +50,12 @@ public class EventMapper {
     }
 
     public static Event toEvent(NewEventDto newEventDto, User user, Category category) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Event event = new Event();
         event.setInitiator(user);
         event.setAnnotation(newEventDto.getAnnotation());
         event.setCategory(category);
         event.setDescription(newEventDto.getDescription());
-        event.setEventDate(LocalDateTime.parse(newEventDto.getEventDate(), formatter));
+        event.setEventDate(LocalDateTime.parse(newEventDto.getEventDate(), FORMATTER));
         event.setPaid(newEventDto.isPaid());
         event.setParticipantLimit(newEventDto.getParticipantLimit());
         event.setRequestModeration(true);
@@ -66,16 +67,28 @@ public class EventMapper {
     }
 
     public static Event toUpdatedEvent(AdminUpdateEventRequest dto, Category category, Event event) {
-        event.setAnnotation(dto.getAnnotation());
-        event.setCategory(category);
-        event.setDescription(dto.getDescription());
-        event.setEventDate(LocalDateTime.parse(dto.getEventDate()));
+        if (dto.getAnnotation() != null) {
+            event.setAnnotation(dto.getAnnotation());
+        }
+        if (category != null) {
+            event.setCategory(category);
+        }
+        if (dto.getDescription() != null) {
+            event.setDescription(dto.getDescription());
+        }
+        if (dto.getEventDate() != null) {
+            event.setEventDate(LocalDateTime.parse(dto.getEventDate(), FORMATTER));
+        }
         event.setPaid(dto.isPaid());
         event.setParticipantLimit(dto.getParticipantLimit());
         event.setRequestModeration(dto.isRequestModeration());
-        event.setTitle(dto.getTitle());
-        event.setLat(dto.getLocation().getLat());
-        event.setLon(dto.getLocation().getLon());
+        if (dto.getTitle() != null) {
+            event.setTitle(dto.getTitle());
+        }
+        if (dto.getLocation() != null) {
+            event.setLat(dto.getLocation().getLat());
+            event.setLon(dto.getLocation().getLon());
+        }
         return event;
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.event.Event;
 import ru.practicum.explore.event.EventRepository;
+import ru.practicum.explore.event.EventState;
 import ru.practicum.explore.participationRequest.ParticipationRequest;
 import ru.practicum.explore.participationRequest.ParticipationRequestRepository;
 import ru.practicum.explore.participationRequest.RequestStatus;
@@ -42,11 +43,20 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     @Override
     public ParticipationRequestDto addNewRequest(long userId, long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
+        User requester = userRepository.findById(userId).orElseThrow();
+        List<ParticipationRequest> requests = requestRepository.findByRequesterId(userId);
+        if (requests.stream().anyMatch(r -> r.getEvent().getId() == eventId)
+                || event.getInitiator().getId() == userId
+                || !event.getEventState().equals(EventState.PUBLISHED)) {
+            throw new IllegalStateException();
+        }
+        if (event.getConfirmedRequests() >= event.getParticipantLimit() && event.getParticipantLimit() != 0) {
+            throw new IllegalStateException();
+        }
         ParticipationRequest request = new ParticipationRequest();
-        request.setRequester(user);
+        request.setRequester(requester);
         request.setEvent(event);
-        request.setStatus(RequestStatus.PENDING);
+        request.setStatus(event.isRequestModeration() ? RequestStatus.PENDING : RequestStatus.CONFIRMED);
         return ParticipationRequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }
 

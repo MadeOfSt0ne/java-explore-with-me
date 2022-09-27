@@ -38,7 +38,7 @@ public class RecordServiceTest {
 
     record3.setApp("app3");
     record3.setIp("2222");
-    record3.setUri("uri3");
+    record3.setUri("uri2");
 
     uris[0] = "uri2";
     }
@@ -51,8 +51,7 @@ public class RecordServiceTest {
         assertNotNull(rec1);
         assertNotNull(rec2);
         assertNotNull(rec3);
-        assertEquals(1, service.getRecords("2022-09-01 10:10:10", "2022-10-01 10:10:10", uris, false).size());
-        assertEquals(3, service.getRecords("2022-09-01 10:10:10", "2022-10-01 10:10:10", null, false).size());
-        assertEquals(3, service.getRecords("2022-09-01 10:10:10", "2022-10-01 10:10:10", null, true).size());
+        assertEquals(2, service.getRecords("2022-09-01 10:10:10", "2022-10-01 10:10:10", uris, false).size());
+        assertEquals(0, service.getRecords("2022-09-01 10:10:10", "2022-09-25 10:10:10", uris, false).size());
     }
 }

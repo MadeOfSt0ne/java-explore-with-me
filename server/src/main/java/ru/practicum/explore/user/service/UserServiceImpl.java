@@ -9,8 +9,8 @@ import ru.practicum.explore.user.User;
 import ru.practicum.explore.user.UserRepository;
 import ru.practicum.explore.user.dto.UserDto;
 import ru.practicum.explore.user.dto.UserMapper;
-import ru.practicum.explore.user.service.UserService;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -26,9 +26,15 @@ public class UserServiceImpl implements UserService {
      * @param size количество элементов в наборе
      */
     @Override
-    public List<UserDto> getUsers(int[] ids, int from, int size) {
+    public List<UserDto> getUsers(Long[] ids, int from, int size) {
         Pageable pageable = PageRequest.of(from, size);
-        Page<User> users = userRepository.findAll(pageable);
+        Page<User> users;
+        if (ids != null) {
+            List<Long> userIds = Arrays.asList(ids);
+            users = userRepository.findUsersByIdIn(userIds, pageable);
+        } else {
+            users = userRepository.findAll(pageable);
+        }
         return UserMapper.toUserDto(users);
     }
 

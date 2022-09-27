@@ -21,8 +21,5 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
      */
     List<ParticipationRequest> findByEventIdAndStatus(long eventId, RequestStatus status);
 
-    /**
-     * Получение количества подтвержденных заявок на участие в событии
-     */
-    int countByEventIdAndStatus(long eventId, RequestStatus status);
+    ParticipationRequest findParticipationRequestByRequesterIdAndEventId(long requesterId, long eventId);
 }

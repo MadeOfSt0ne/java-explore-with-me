@@ -22,7 +22,10 @@ public class Compilation {
     private boolean pinned;
     @Column(name = "title")
     private String title;
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @ToString.Exclude
+    @JoinTable(name = "event_compilation",
+            joinColumns = {@JoinColumn(name = "compilation_id")},
+            inverseJoinColumns = {@JoinColumn(name = "event_id")})
     private Set<Event> events;
 }

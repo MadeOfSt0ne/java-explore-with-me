@@ -52,7 +52,7 @@ public class RecordServiceImpl implements RecordService {
 
         String sqlQuery = "SELECT app, uri, count(hits) as hits " +
                 "FROM (Select Distinct app, uri, 1 as hits FROM records r " +
-                "where r.uri IN (:uris) and date_hit Between :start and :end) as p " +
+                "where r.uri IN (:uris) and timestamp Between :start and :end) as p " +
                 "group by p.app, p.uri";
 
         MapSqlParameterSource paramSource = new MapSqlParameterSource();

@@ -7,14 +7,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explore.client.EndpointHit;
 import ru.practicum.explore.event.Event;
 import ru.practicum.explore.event.EventRepository;
+import ru.practicum.explore.event.EventState;
 import ru.practicum.explore.event.QEvent;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventMapper;
 import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.PublicEventsRequest;
+import ru.practicum.explore.exception.NotFoundException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -26,6 +30,7 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     private final EventRepository eventRepository;
     private final ViewsProcessor viewsProcessor;
+    private final EventClient eventClient;
 
     /**
      * Получение событий с возможностью фильтрации
@@ -37,6 +42,8 @@ public class PublicEventServiceImpl implements PublicEventService {
     public List<EventShortDto> getEventsFiltered(PublicEventsRequest request) {
         QEvent event = QEvent.event;
         List<BooleanExpression> conditions = new ArrayList<>();
+        // Событие должно быть опубликованным
+        conditions.add(event.eventState.eq(EventState.PUBLISHED));
         // Если текст не пустой, то добавляем в условия
         if (!request.getText().isBlank()) {
             conditions.add(event.annotation.likeIgnoreCase(request.getText())
@@ -101,7 +108,18 @@ public class PublicEventServiceImpl implements PublicEventService {
     @Override
     public EventFullDto getEvent(long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
+        if (!event.getEventState().equals(EventState.PUBLISHED)) {
+            throw new NotFoundException("Event is not published");
+        }
         event.setViews(viewsProcessor.getViews(eventId));
         return EventMapper.toEventFullDto(event);
+    }
+
+    /**
+     * Отправка статистики
+     */
+    @Override
+    public void makeAndSendEndpointHit(String app, HttpServletRequest request) {
+        eventClient.sendHit(new EndpointHit(app, request.getRequestURI(), request.getRemoteAddr()));
     }
 }

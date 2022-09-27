@@ -9,7 +9,7 @@ public interface UserService {
     /**
      * Получение списка пользователей
      */
-    List<UserDto> getUsers(int[] ids, int from, int size);
+    List<UserDto> getUsers(Long[] ids, int from, int size);
 
     /**
      * Добавление нового пользователя
