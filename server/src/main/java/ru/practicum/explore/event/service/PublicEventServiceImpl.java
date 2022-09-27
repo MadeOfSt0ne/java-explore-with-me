@@ -16,12 +16,12 @@ import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventMapper;
 import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.PublicEventsRequest;
-import ru.practicum.explore.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -109,7 +109,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     public EventFullDto getEvent(long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (!event.getEventState().equals(EventState.PUBLISHED)) {
-            throw new NotFoundException("Event is not published");
+            throw new NoSuchElementException("Event is not published");
         }
         event.setViews(viewsProcessor.getViews(eventId));
         return EventMapper.toEventFullDto(event);

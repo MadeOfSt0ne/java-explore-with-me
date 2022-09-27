@@ -46,6 +46,7 @@ class AdminEventServiceImplTest {
     @BeforeEach
     void setUp() {
         initiator.setName("Name");
+        initiator.setEmail("aa@aa.ru");
         userRepo.save(initiator);
 
         category.setName("category");

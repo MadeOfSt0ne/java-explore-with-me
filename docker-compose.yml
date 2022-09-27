@@ -40,6 +40,6 @@ services:
     image: postgres:14-alpine
     container_name: ewm-db
     environment:
-      - POSTGRES_DB=main
+      - POSTGRES_DB=server
       - POSTGRES_USER=main
       - POSTGRES_PASSWORD=password

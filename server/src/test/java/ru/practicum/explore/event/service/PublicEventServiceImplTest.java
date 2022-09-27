@@ -12,11 +12,11 @@ import ru.practicum.explore.event.EventRepository;
 import ru.practicum.explore.event.EventState;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.PublicEventsRequest;
-import ru.practicum.explore.exception.NotFoundException;
 import ru.practicum.explore.user.User;
 import ru.practicum.explore.user.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,6 +48,7 @@ class PublicEventServiceImplTest {
     @BeforeEach
     void setUp() {
         initiator.setName("Name");
+        initiator.setEmail("init@init.com");
         userRepo.save(initiator);
 
         category.setName("category");
@@ -96,6 +97,6 @@ class PublicEventServiceImplTest {
     void getEvent() {
         EventFullDto dto = publicService.getEvent(event2.getId());
         assertEquals(event2.getAnnotation(), dto.getAnnotation());
-        assertThrows(NotFoundException.class, () -> publicService.getEvent(event.getId()));
+        assertThrows(NoSuchElementException.class, () -> publicService.getEvent(event.getId()));
     }
 }

@@ -42,7 +42,12 @@ class ParticipationRequestServiceTest {
 
     @BeforeEach
     void setUp() {
+        initiator.setName("initiator");
+        initiator.setEmail("init@init.com");
         userRepository.save(initiator);
+
+        requester.setName("requester");
+        requester.setEmail("req@req.com");
         userRepository.save(requester);
 
         event1.setInitiator(initiator);

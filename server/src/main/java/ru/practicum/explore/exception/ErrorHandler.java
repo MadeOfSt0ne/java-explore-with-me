@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.format.DateTimeParseException;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -20,7 +21,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFoundException(final NotFoundException e) {
+    public ErrorResponse handleNotFoundException(final NoSuchElementException e) {
         return new ErrorResponse(e.getLocalizedMessage(), "The required object was not found.",
                 ErrorStatus._404_NOT_FOUND);
     }

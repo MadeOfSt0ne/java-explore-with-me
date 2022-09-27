@@ -26,7 +26,7 @@ public class EventClient extends BaseClient {
     }
 
     public void sendHit(EndpointHit endpointHit) {
-        post("/hit", endpointHit);
+        postHit("/hit", endpointHit);
     }
 
     public List<ViewStats> getStats(String start, String end, String[] uris, boolean unique) {

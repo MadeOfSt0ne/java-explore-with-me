@@ -57,9 +57,11 @@ class PrivateEventServiceImplTest {
     @BeforeEach
     void setUp() {
         initiator.setName("Initiator");
+        initiator.setEmail("init@init.com");
         userRepo.save(initiator);
 
         requester.setName("Requester");
+        requester.setEmail("req@req.com");
         userRepo.save(requester);
 
         category.setName("category");

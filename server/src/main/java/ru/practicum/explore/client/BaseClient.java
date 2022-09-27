@@ -10,6 +10,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.http.RequestEntity.post;
+
 public class BaseClient {
 
     protected final RestTemplate rest;
@@ -18,8 +20,8 @@ public class BaseClient {
         this.rest = rest;
     }
 
-    protected <T> ResponseEntity<Object> post(String path, T body) {
-        return post(path, body);
+    protected <T> void postHit(String path, T body) {
+        post(path, body);
     }
 
     protected List<ViewStats> get(String path, Map<String, Object> parameters) {
