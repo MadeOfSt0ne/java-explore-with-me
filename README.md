@@ -8,8 +8,8 @@ PR link: https://github.com/MadeOfSt0ne/java-explore-with-me/pull/1
 * Чтобы запустить сервисы по отдельности (через main) нужна запущенная бд Postgres. С помощью 
 pgAdmin4 создайте новую бд и внесите её название, имя пользователя и пароль в настройки /main/resources
 2. Спецификации. Для чтения используйте [Swagger](https://editor-next.swagger.io).  
-* [Основной сервис](../blob/main/ewm-main-service-spec.json)
-* [Сервис статистики](../blob/main/ewm-stats-service-spec.json)  
+* [Основной сервис](https://github.com/MadeOfSt0ne/java-explore-with-me/blob/develop/ewm-main-service-spec.json)
+* [Сервис статистики](https://github.com/MadeOfSt0ne/java-explore-with-me/blob/develop/ewm-stats-service-spec.json)  
 3. Технологии  
 Java 11, Springboot, Maven, Hibernate, JUnit, PostgreSQL, QueryDsl, Lombok, RestTemplate
 
