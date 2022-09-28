@@ -5,20 +5,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.practicum.explore.category.Category;
-import ru.practicum.explore.category.CategoryRepository;
-import ru.practicum.explore.event.Event;
-import ru.practicum.explore.event.EventRepository;
-import ru.practicum.explore.event.EventState;
-import ru.practicum.explore.event.dto.EventFullDto;
-import ru.practicum.explore.event.dto.NewEventDto;
-import ru.practicum.explore.event.dto.UpdateEventRequest;
-import ru.practicum.explore.participationRequest.ParticipationRequest;
-import ru.practicum.explore.participationRequest.ParticipationRequestRepository;
-import ru.practicum.explore.participationRequest.RequestStatus;
-import ru.practicum.explore.participationRequest.dto.ParticipationRequestDto;
-import ru.practicum.explore.user.User;
-import ru.practicum.explore.user.UserRepository;
+import ru.practicum.explore.models.category.Category;
+import ru.practicum.explore.models.category.CategoryRepository;
+import ru.practicum.explore.models.event.Event;
+import ru.practicum.explore.models.event.EventRepository;
+import ru.practicum.explore.models.event.EventState;
+import ru.practicum.explore.models.event.dto.EventFullDto;
+import ru.practicum.explore.models.event.dto.NewEventDto;
+import ru.practicum.explore.models.event.dto.UpdateEventRequestDto;
+import ru.practicum.explore.services.client.PrivateEventService;
+import ru.practicum.explore.models.participationRequest.ParticipationRequest;
+import ru.practicum.explore.models.participationRequest.ParticipationRequestRepository;
+import ru.practicum.explore.models.participationRequest.RequestStatus;
+import ru.practicum.explore.models.participationRequest.dto.ParticipationRequestDto;
+import ru.practicum.explore.models.user.User;
+import ru.practicum.explore.models.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -51,7 +52,7 @@ class PrivateEventServiceImplTest {
     private final User initiator = new User();
     private final User requester = new User();
     private final NewEventDto newDto = new NewEventDto();
-    private final UpdateEventRequest updateEventRequest = new UpdateEventRequest();
+    private final UpdateEventRequestDto updateEventRequestDto = new UpdateEventRequestDto();
     private final ParticipationRequest request = new ParticipationRequest();
 
     @BeforeEach
@@ -107,10 +108,10 @@ class PrivateEventServiceImplTest {
         newDto.setTitle("The new one!");
         newDto.setLocation(new NewEventDto.Location(1.1f, 2.2f));
 
-        updateEventRequest.setEventId(event.getId());
-        updateEventRequest.setAnnotation("New annotation");
-        updateEventRequest.setDescription("New description");
-        updateEventRequest.setEventDate("2022-10-17 10:10:10");
+        updateEventRequestDto.setEventId(event.getId());
+        updateEventRequestDto.setAnnotation("New annotation");
+        updateEventRequestDto.setDescription("New description");
+        updateEventRequestDto.setEventDate("2022-10-17 10:10:10");
 
         request.setEvent(event);
         request.setRequester(requester);
@@ -126,11 +127,11 @@ class PrivateEventServiceImplTest {
 
     @Test
     void updateEvent() {
-        EventFullDto dto = privateService.updateEvent(initiator.getId(), updateEventRequest);
+        EventFullDto dto = privateService.updateEvent(initiator.getId(), updateEventRequestDto);
         assertEquals(event.getTitle(), dto.getTitle());
         assertEquals(event.getParticipantLimit(), dto.getParticipantLimit());
-        assertEquals(updateEventRequest.getAnnotation(), dto.getAnnotation());
-        assertEquals(updateEventRequest.getEventDate(), dto.getEventDate());
+        assertEquals(updateEventRequestDto.getAnnotation(), dto.getAnnotation());
+        assertEquals(updateEventRequestDto.getEventDate(), dto.getEventDate());
     }
 
     @Test

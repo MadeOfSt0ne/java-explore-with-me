@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.practicum.explore.category.dto.CategoryDto;
-import ru.practicum.explore.category.service.AdminCategoryService;
-import ru.practicum.explore.category.service.PublicCategoryService;
+import ru.practicum.explore.models.category.dto.CategoryDto;
+import ru.practicum.explore.services.admin.AdminCategoryService;
+import ru.practicum.explore.services.client.PublicCategoryService;
 
 import java.util.List;
 

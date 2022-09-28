@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.practicum.explore.user.dto.UserDto;
-import ru.practicum.explore.user.service.UserService;
+import ru.practicum.explore.models.user.dto.UserDto;
+import ru.practicum.explore.services.admin.UserService;
 
 import java.util.List;
 

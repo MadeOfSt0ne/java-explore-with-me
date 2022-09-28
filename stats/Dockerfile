@@ -1,4 +1,4 @@
 FROM amazoncorretto:11
 COPY target/*.jar /stats.jar
-EXPOSE 8080
+EXPOSE 9090
 ENTRYPOINT ["java", "-jar", "/stats.jar"]

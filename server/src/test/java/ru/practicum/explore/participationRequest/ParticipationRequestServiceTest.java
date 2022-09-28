@@ -5,13 +5,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.practicum.explore.event.Event;
-import ru.practicum.explore.event.EventRepository;
-import ru.practicum.explore.event.EventState;
-import ru.practicum.explore.participationRequest.dto.ParticipationRequestDto;
-import ru.practicum.explore.participationRequest.service.ParticipationRequestService;
-import ru.practicum.explore.user.User;
-import ru.practicum.explore.user.UserRepository;
+import ru.practicum.explore.models.event.Event;
+import ru.practicum.explore.models.event.EventRepository;
+import ru.practicum.explore.models.event.EventState;
+import ru.practicum.explore.models.participationRequest.ParticipationRequest;
+import ru.practicum.explore.models.participationRequest.ParticipationRequestRepository;
+import ru.practicum.explore.models.participationRequest.RequestStatus;
+import ru.practicum.explore.models.participationRequest.dto.ParticipationRequestDto;
+import ru.practicum.explore.services.client.ParticipationRequestService;
+import ru.practicum.explore.models.user.User;
+import ru.practicum.explore.models.user.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
