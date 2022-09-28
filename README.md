@@ -1,3 +1,4 @@
+
 # Java Explore with me.
 ExploreWithMe project.  
 PR link: https://github.com/MadeOfSt0ne/java-explore-with-me/pull/1  
@@ -55,4 +56,5 @@ Java 11, Springboot, Maven, Hibernate, JUnit, PostgreSQL, QueryDsl, Lombok, Rest
      Оба сервиса ExploreWithMe работают за VPN. С внешним миром их связывает гейтвей. Он контактирует с системой 
      аутентификации и авторизации, а затем перенаправляет запрос в сервисы. То есть, если гейтвей пропустил запрос к
      закрытой или административной части API, значит этот запрос успешно прошел аутентификацию и авторизацию.
+
 
