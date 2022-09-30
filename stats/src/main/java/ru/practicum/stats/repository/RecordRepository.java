@@ -1,6 +1,7 @@
-package ru.practicum.stats.models.record;
+package ru.practicum.stats.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import ru.practicum.stats.models.record.Record;
 
 import java.time.LocalDateTime;
 import java.util.List;

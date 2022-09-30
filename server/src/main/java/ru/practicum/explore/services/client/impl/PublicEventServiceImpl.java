@@ -1,4 +1,4 @@
-package ru.practicum.explore.services.client;
+package ru.practicum.explore.services.client.impl;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
@@ -7,15 +7,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore.utils.RestTemplateClient.EndpointHit;
+import ru.practicum.explore.exceptions.ValidationException;
+import ru.practicum.explore.mappers.EventMapper;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.models.event.EventRepository;
+import ru.practicum.explore.repositroy.EventRepository;
 import ru.practicum.explore.models.event.EventState;
 import ru.practicum.explore.models.event.QEvent;
 import ru.practicum.explore.models.event.dto.EventFullDto;
-import ru.practicum.explore.mappers.EventMapper;
 import ru.practicum.explore.models.event.dto.EventShortDto;
 import ru.practicum.explore.models.event.dto.PublicEventsRequest;
+import ru.practicum.explore.services.client.PublicEventService;
+import ru.practicum.explore.utils.CommentProcessor.CommentProcessor;
+import ru.practicum.explore.utils.RestTemplateClient.EndpointHit;
 import ru.practicum.explore.utils.RestTemplateClient.EventClient;
 import ru.practicum.explore.utils.RestTemplateClient.ViewsProcessor;
 
@@ -33,6 +36,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final EventRepository eventRepository;
     private final ViewsProcessor viewsProcessor;
     private final EventClient eventClient;
+    private final CommentProcessor commentProcessor;
 
     /**
      * Получение событий с возможностью фильтрации
@@ -63,7 +67,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         } else {
             conditions.add(event.paid.isFalse());
         }
-        // Добавляем условие что начало события должно быть в заданном промежутке времени
+        // Добавляем условие, что начало события должно быть в заданном промежутке времени
         conditions.add(event.eventDate.between(request.getRangeStart(), request.getRangeEnd()));
         // Собираем все условия в одно
         BooleanExpression finalCondition = conditions.stream()
@@ -74,7 +78,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         Page<Event> events = eventRepository.findAll(finalCondition, pageable);
         // Проставляем всем событиям просмотры
         events.forEach(e -> e.setViews(viewsProcessor.getViews(e.getId())));
-        // Если нужны только имеющие свободные места, то добавряем фильтр на свободные места
+        // Если нужны только имеющие свободные места, то добавляем фильтр на свободные места
         if (request.isOnlyAvailable()) {
             return events.stream()
                     .filter(e -> e.getParticipantLimit() > e.getConfirmedRequests())
@@ -98,7 +102,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         switch (sort) {
             case ("views") : return Comparator.comparing(Event::getViews);
             case ("event_date") : return Comparator.comparing(Event::getEventDate);
-            default: throw new IllegalArgumentException("Unknown sort: " + sort + ".");
+            default: throw new ValidationException("Unknown sort: " + sort + ".");
         }
     }
 

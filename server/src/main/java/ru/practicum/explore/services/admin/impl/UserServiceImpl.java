@@ -1,4 +1,4 @@
-package ru.practicum.explore.services.admin;
+package ru.practicum.explore.services.admin.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -6,9 +6,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.models.user.User;
-import ru.practicum.explore.models.user.UserRepository;
+import ru.practicum.explore.repositroy.UserRepository;
 import ru.practicum.explore.mappers.UserMapper;
 import ru.practicum.explore.models.user.dto.UserDto;
+import ru.practicum.explore.services.admin.UserService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,5 +58,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public void ban(long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        user.setBanned(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void unban(long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        user.setBanned(false);
+        userRepository.save(user);
     }
 }

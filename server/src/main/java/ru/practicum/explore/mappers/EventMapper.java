@@ -41,7 +41,8 @@ public class EventMapper {
                 event.getEventState().toString(),
                 event.getTitle() == null ? "no title" : event.getTitle(),
                 event.getViews(),
-                new EventFullDto.Location(event.getLat(), event.getLon())
+                new EventFullDto.Location(event.getLat(), event.getLon()),
+                event.getComments()
         );
     }
 
@@ -58,7 +59,8 @@ public class EventMapper {
                 new EventShortDto.UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()),
                 event.isPaid(),
                 event.getTitle(),
-                event.getViews()
+                event.getViews(),
+                event.getComments()
         );
     }
 

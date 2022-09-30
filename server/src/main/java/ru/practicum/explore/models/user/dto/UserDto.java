@@ -25,4 +25,8 @@ public class UserDto {
      * Электронная почта пользователя
      */
     private String email;
+    /**
+     * Может ли пользователь оставлять комментарии
+     */
+    private boolean banned;
 }

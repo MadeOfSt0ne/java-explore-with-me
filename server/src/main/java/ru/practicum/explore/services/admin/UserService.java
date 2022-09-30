@@ -23,4 +23,14 @@ public interface UserService {
      * Удаление пользователя по id
      */
     void deleteUser(long id);
+
+    /**
+     * Запретить пользователю оставлять комментарии
+     */
+    void ban(long userId);
+
+    /**
+     * Разрешить пользователю оставлять комментарии
+     */
+    void unban(long userId);
 }

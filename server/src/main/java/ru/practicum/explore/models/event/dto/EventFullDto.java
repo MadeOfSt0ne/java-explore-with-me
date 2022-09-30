@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.explore.models.comment.Comment;
+
+import java.util.List;
 
 /**
  * Полное дто события
@@ -77,6 +80,10 @@ public class EventFullDto {
      * Дто локации, в которой происходит событие
      */
     private Location location;
+    /**
+     * Комментарии
+     */
+    private List<Comment> commentList;
 
     /**
      * Дто категории

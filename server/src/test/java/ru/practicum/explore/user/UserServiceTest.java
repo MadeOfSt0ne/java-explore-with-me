@@ -10,8 +10,7 @@ import ru.practicum.explore.services.admin.UserService;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -55,5 +54,19 @@ public class UserServiceTest {
         final UserDto dto1 = service.addNewUser(userDto.toBuilder().id(2L).name("user2").email("user2@user.com").build());
         service.deleteUser(dto.getId());
         assertEquals(List.of(dto1), service.getUsers(null, 0, 10));
+    }
+
+    @Test
+    void testBanUser() {
+        final UserDto dto = service.addNewUser(userDto);
+        service.ban(dto.getId());
+        assertTrue(service.getUsers(null, 0, 10).get(0).isBanned());
+    }
+
+    @Test
+    void testUnbanUser() {
+        final UserDto dto = service.addNewUser(userDto);
+        service.unban(dto.getId());
+        assertFalse(service.getUsers(null, 0, 10).get(0).isBanned());
     }
 }

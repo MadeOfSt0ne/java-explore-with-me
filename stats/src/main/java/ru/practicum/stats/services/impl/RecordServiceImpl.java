@@ -1,14 +1,15 @@
-package ru.practicum.stats.services;
+package ru.practicum.stats.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.stats.models.record.RecordRepository;
+import ru.practicum.stats.repository.RecordRepository;
 import ru.practicum.stats.models.record.dto.EndpointHit;
 import ru.practicum.stats.mappers.RecordMapper;
 import ru.practicum.stats.models.record.dto.ViewStats;
+import ru.practicum.stats.services.RecordService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
