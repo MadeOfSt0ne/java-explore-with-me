@@ -6,15 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.repositroy.EventRepository;
+import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.models.event.EventState;
 import ru.practicum.explore.models.participationRequest.ParticipationRequest;
-import ru.practicum.explore.repositroy.ParticipationRequestRepository;
+import ru.practicum.explore.repository.ParticipationRequestRepository;
 import ru.practicum.explore.models.participationRequest.RequestStatus;
 import ru.practicum.explore.models.participationRequest.dto.ParticipationRequestDto;
 import ru.practicum.explore.services.client.ParticipationRequestService;
 import ru.practicum.explore.models.user.User;
-import ru.practicum.explore.repositroy.UserRepository;
+import ru.practicum.explore.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 

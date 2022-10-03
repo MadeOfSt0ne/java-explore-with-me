@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.mappers.CompilationMapper;
 import ru.practicum.explore.models.compilation.Compilation;
-import ru.practicum.explore.repositroy.CompilationRepository;
+import ru.practicum.explore.repository.CompilationRepository;
 import ru.practicum.explore.models.compilation.dto.CompilationDto;
 import ru.practicum.explore.services.client.PublicCompilationService;
 

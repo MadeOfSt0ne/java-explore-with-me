@@ -11,15 +11,14 @@ import ru.practicum.explore.models.event.dto.NewEventDto;
 import ru.practicum.explore.models.user.User;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import static ru.practicum.explore.utils.DateTimeFormat.DateTimeFormat.FORMATTER;
 
 /**
  * Маппер для событий
  */
 @NoArgsConstructor
 public class EventMapper {
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Создание полного дто из события

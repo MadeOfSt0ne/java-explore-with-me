@@ -11,10 +11,10 @@ import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.models.event.Event;
 import ru.practicum.explore.models.event.EventState;
 import ru.practicum.explore.models.user.User;
-import ru.practicum.explore.repositroy.CategoryRepository;
-import ru.practicum.explore.repositroy.CommentRepository;
-import ru.practicum.explore.repositroy.EventRepository;
-import ru.practicum.explore.repositroy.UserRepository;
+import ru.practicum.explore.repository.CategoryRepository;
+import ru.practicum.explore.repository.CommentRepository;
+import ru.practicum.explore.repository.EventRepository;
+import ru.practicum.explore.repository.UserRepository;
 import ru.practicum.explore.services.admin.AdminCommentService;
 
 import java.time.LocalDateTime;

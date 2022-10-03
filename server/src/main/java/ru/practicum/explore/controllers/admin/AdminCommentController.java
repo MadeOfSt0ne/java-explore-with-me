@@ -22,7 +22,7 @@ public class AdminCommentController {
      */
     @PatchMapping
     public CommentDto updateComment(@PathVariable(value = "commentId") long commentId,
-                                  @RequestParam(value = "text") String text) {
+                                    @RequestParam(value = "text") String text) {
         log.info("ADMIN: Edit comment={} with text={}", commentId, text);
         return commentService.editComment(commentId, text);
     }

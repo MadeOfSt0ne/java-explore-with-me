@@ -27,7 +27,7 @@ public class PrivateCommentController {
                                     @PathVariable(value = "eventId") long eventId,
                                     @RequestParam(value = "text") String text) {
         log.info("PRIVATE: User={} add new comment={} to event={}", userId, text, eventId);
-        return null;
+        return commentService.addComment(userId, eventId, text);
     }
 
     /**
@@ -38,7 +38,7 @@ public class PrivateCommentController {
                                     @PathVariable(value = "commentId") long commentId,
                                     @RequestParam(value = "text") String text) {
         log.info("PRIVATE: User={} edit comment={} with text={}", userId, commentId, text);
-        return null;
+        return commentService.editComment(userId, commentId, text);
     }
 
     /**
@@ -47,16 +47,16 @@ public class PrivateCommentController {
     @GetMapping(path = "/own")
     public List<CommentDto> getOwnComments(@PathVariable(value = "userId") long userId) {
         log.info("PRIVATE: User={} get own comments", userId);
-        return null;
+        return commentService.getComments(userId);
     }
 
     /**
      * Удаление своего комментария
      */
     @DeleteMapping(path = "/{commentId}")
-    public String deleteOwnComment(@PathVariable(value = "userId") long userId,
+    public void deleteOwnComment(@PathVariable(value = "userId") long userId,
                                    @PathVariable(value = "commentId") long commentId) {
         log.info("PRIVATE: User={} deletes comment={}", userId, commentId);
-        return null;
+        commentService.removeComment(userId, commentId);
     }
 }

@@ -3,15 +3,15 @@ package ru.practicum.explore.services.client.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.repositroy.EventRepository;
+import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.models.event.EventState;
-import ru.practicum.explore.repositroy.ParticipationRequestRepository;
+import ru.practicum.explore.repository.ParticipationRequestRepository;
 import ru.practicum.explore.models.participationRequest.ParticipationRequest;
 import ru.practicum.explore.models.participationRequest.RequestStatus;
 import ru.practicum.explore.models.participationRequest.dto.ParticipationRequestDto;
 import ru.practicum.explore.mappers.ParticipationRequestMapper;
 import ru.practicum.explore.models.user.User;
-import ru.practicum.explore.repositroy.UserRepository;
+import ru.practicum.explore.repository.UserRepository;
 import ru.practicum.explore.services.client.ParticipationRequestService;
 
 import java.util.List;

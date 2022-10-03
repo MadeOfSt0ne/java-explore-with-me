@@ -11,9 +11,9 @@ import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.models.event.Event;
 import ru.practicum.explore.models.event.EventState;
 import ru.practicum.explore.models.user.User;
-import ru.practicum.explore.repositroy.CategoryRepository;
-import ru.practicum.explore.repositroy.EventRepository;
-import ru.practicum.explore.repositroy.UserRepository;
+import ru.practicum.explore.repository.CategoryRepository;
+import ru.practicum.explore.repository.EventRepository;
+import ru.practicum.explore.repository.UserRepository;
 import ru.practicum.explore.services.client.PrivateCommentService;
 
 import java.time.LocalDateTime;
@@ -83,10 +83,10 @@ class CommentServiceTest {
     @Test
     void editComment() {
         final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
-        assertEquals("Not edited.", dto.getEditedOn());
+        assertNull(dto.getEditedOn());
         final CommentDto edited = service.editComment(initiator.getId(), event.getId(), "New");
         assertEquals(edited.getText(), "New");
-        assertNotEquals("Not edited.", edited.getEditedOn());
+        assertNotNull(edited.getEditedOn());
     }
 
     @Test

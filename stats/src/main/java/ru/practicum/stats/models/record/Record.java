@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Record {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -24,16 +25,19 @@ public class Record {
      */
     @Column(name = "app")
     private String app;
+
     /**
      * Ip адрес, с которого сделан запрос
      */
     @Column(name = "ip")
     private String ip;
+
     /**
      * Время создания записи
      */
     @Column(name = "timestamp")
     private LocalDateTime timestamp = LocalDateTime.now().withNano(0);
+
     /**
      * Адрес, по которому сделан запрос
      */

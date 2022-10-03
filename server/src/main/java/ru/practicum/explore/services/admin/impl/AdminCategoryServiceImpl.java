@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.mappers.CategoryMapper;
 import ru.practicum.explore.models.category.Category;
-import ru.practicum.explore.repositroy.CategoryRepository;
+import ru.practicum.explore.repository.CategoryRepository;
 import ru.practicum.explore.models.category.dto.CategoryDto;
-import ru.practicum.explore.repositroy.EventRepository;
+import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.services.admin.AdminCategoryService;
 
 @Service

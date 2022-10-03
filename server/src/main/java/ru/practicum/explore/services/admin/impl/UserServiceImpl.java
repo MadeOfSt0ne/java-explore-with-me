@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.models.user.User;
-import ru.practicum.explore.repositroy.UserRepository;
+import ru.practicum.explore.repository.UserRepository;
 import ru.practicum.explore.mappers.UserMapper;
 import ru.practicum.explore.models.user.dto.UserDto;
 import ru.practicum.explore.services.admin.UserService;

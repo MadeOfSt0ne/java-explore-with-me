@@ -15,10 +15,12 @@ public class EndpointHit {
      * Название приложения
      */
     private String app;
+
     /**
      * Адрес, по которому сделан запрос
      */
     private String uri;
+
     /**
      * Ip адрес с которого сделан запрос
      */

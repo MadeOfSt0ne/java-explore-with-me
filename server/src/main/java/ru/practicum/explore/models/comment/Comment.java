@@ -19,23 +19,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
+
     /**
      * Идентификатор
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     /**
      * Текст комментария
      */
     @Column(name = "text")
     private String text;
+
     /**
      * Автор комментария
      */
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
+
     /**
      * Событие, к которому относится комментарий
      */
@@ -43,11 +47,13 @@ public class Comment {
     @JoinColumn(name = "event_id")
     @JsonBackReference
     private Event event;
+
     /**
      * Дата и время создания комментария
      */
     @Column(name = "createdOn")
     private LocalDateTime createdOn = LocalDateTime.now().withNano(0);
+
     /**
      * Дата и время редактирования комментария
      */

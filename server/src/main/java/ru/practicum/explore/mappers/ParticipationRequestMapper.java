@@ -4,18 +4,17 @@ import lombok.NoArgsConstructor;
 import ru.practicum.explore.models.participationRequest.ParticipationRequest;
 import ru.practicum.explore.models.participationRequest.dto.ParticipationRequestDto;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static ru.practicum.explore.utils.DateTimeFormat.DateTimeFormat.FORMATTER;
 
 /**
  * Маппер для заявок на участие в событии
  */
 @NoArgsConstructor
 public class ParticipationRequestMapper {
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Создание дто из заявки

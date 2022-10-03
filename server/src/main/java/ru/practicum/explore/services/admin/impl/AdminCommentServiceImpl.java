@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.mappers.CommentMapper;
 import ru.practicum.explore.models.comment.Comment;
-import ru.practicum.explore.repositroy.CommentRepository;
+import ru.practicum.explore.repository.CommentRepository;
 import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.services.admin.AdminCommentService;
 

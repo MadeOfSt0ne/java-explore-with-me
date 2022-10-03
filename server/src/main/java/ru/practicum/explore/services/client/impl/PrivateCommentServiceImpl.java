@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service;
 import ru.practicum.explore.exceptions.ValidationException;
 import ru.practicum.explore.mappers.CommentMapper;
 import ru.practicum.explore.models.comment.Comment;
-import ru.practicum.explore.repositroy.CommentRepository;
+import ru.practicum.explore.repository.CommentRepository;
 import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.repositroy.EventRepository;
+import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.models.user.User;
-import ru.practicum.explore.repositroy.UserRepository;
+import ru.practicum.explore.repository.UserRepository;
 import ru.practicum.explore.services.client.PrivateCommentService;
 
 import java.time.LocalDateTime;
@@ -31,10 +31,10 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
             throw new ValidationException("Комментарий не может быть пустым.");
         }
         User author = userRepo.findById(userId).orElseThrow();
-        Event event = eventRepo.findById(eventId).orElseThrow();
         if (author.isBanned()) {
             throw new IllegalStateException("Вы не можете оставлять комментарии.");
         }
+        Event event = eventRepo.findById(eventId).orElseThrow();
         Comment comment = commentRepo.save(CommentMapper.toComment(text, author, event));
         return CommentMapper.toCommentDto(comment);
     }

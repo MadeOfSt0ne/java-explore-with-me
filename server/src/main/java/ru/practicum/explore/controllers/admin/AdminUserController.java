@@ -53,7 +53,7 @@ public class AdminUserController {
      */
     @PatchMapping(path = "/{userId}/ban")
     public void banUser(@PathVariable(value = "userId") long userId) {
-        log.info("ADMIN: Mute user={}", userId);
+        log.info("ADMIN: Ban user={}", userId);
         userService.ban(userId);
     }
 
@@ -62,7 +62,7 @@ public class AdminUserController {
      */
     @PatchMapping(path = "/{userId}/unban")
     public void unbanUser(@PathVariable(value = "userId") long userId) {
-        log.info("ADMIN: Unmute user={}", userId);
+        log.info("ADMIN: Unban user={}", userId);
         userService.unban(userId);
     }
 }

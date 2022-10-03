@@ -10,14 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.exceptions.ValidationException;
 import ru.practicum.explore.mappers.EventMapper;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.repositroy.EventRepository;
 import ru.practicum.explore.models.event.EventState;
 import ru.practicum.explore.models.event.QEvent;
 import ru.practicum.explore.models.event.dto.EventFullDto;
 import ru.practicum.explore.models.event.dto.EventShortDto;
 import ru.practicum.explore.models.event.dto.PublicEventsRequest;
+import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.services.client.PublicEventService;
-import ru.practicum.explore.utils.CommentProcessor.CommentProcessor;
 import ru.practicum.explore.utils.RestTemplateClient.EndpointHit;
 import ru.practicum.explore.utils.RestTemplateClient.EventClient;
 import ru.practicum.explore.utils.RestTemplateClient.ViewsProcessor;
@@ -36,7 +35,6 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final EventRepository eventRepository;
     private final ViewsProcessor viewsProcessor;
     private final EventClient eventClient;
-    private final CommentProcessor commentProcessor;
 
     /**
      * Получение событий с возможностью фильтрации

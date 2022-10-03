@@ -5,14 +5,12 @@ import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.models.event.Event;
 import ru.practicum.explore.models.user.User;
 
-import java.time.format.DateTimeFormatter;
+import static ru.practicum.explore.utils.DateTimeFormat.DateTimeFormat.FORMATTER;
 
 /**
  * Маппер для комментариев
  */
 public class CommentMapper {
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Создание дто из комментария
@@ -22,7 +20,7 @@ public class CommentMapper {
                 comment.getId(),
                 comment.getText(),
                 comment.getCreatedOn().format(FORMATTER),
-                comment.getEditedOn() == null ? "Not edited." : comment.getEditedOn().format(FORMATTER),
+                comment.getEditedOn() == null ? null : comment.getEditedOn().format(FORMATTER),
                 new CommentDto.UserDto(comment.getAuthor().getId(), comment.getAuthor().getName()),
                 new CommentDto.EventDto(comment.getEvent().getId(), comment.getEvent().getTitle())
         );
