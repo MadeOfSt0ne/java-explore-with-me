@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.practicum.explore.utils.DateTimeFormat.DateTimeFormat.FORMATTER;
+import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
 @Service
 @RequiredArgsConstructor
@@ -211,7 +211,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         // Если лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
         if (event.getConfirmedRequests() == event.getParticipantLimit()) {
             List<ParticipationRequest> requests = requestRepository.findByEventId(eventId);
-            requests.forEach(r -> r.setStatus(RequestStatus.CANCELLED));
+            requests.forEach(r -> r.setStatus(RequestStatus.REJECTED));
         }
         return ParticipationRequestMapper.toParticipationRequestDto(confirmed);
     }

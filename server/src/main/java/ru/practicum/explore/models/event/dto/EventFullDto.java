@@ -83,7 +83,7 @@ public class EventFullDto {
     /**
      * Комментарии
      */
-    private List<Comment> commentList;
+    private List<Comment> comments;
 
     /**
      * Дто категории

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.practicum.explore.utils.DateTimeFormat.DateTimeFormat.FORMATTER;
+import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
 /**
  * Класс, обрабатывающий статистику и предоставляющий нужную информацию

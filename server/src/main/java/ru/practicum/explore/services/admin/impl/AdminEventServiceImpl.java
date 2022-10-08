@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.explore.utils.DateTimeFormat.DateTimeFormat.FORMATTER;
+import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
 @Service
 @RequiredArgsConstructor

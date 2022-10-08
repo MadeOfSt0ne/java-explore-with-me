@@ -40,6 +40,7 @@ class CommentServiceTest {
     private final Event event = new Event();
     private final User initiator = new User();
     private final User banned = new User();
+    private final User anotherUser = new User();
     private final Category category = new Category();
 
     @BeforeEach
@@ -52,6 +53,10 @@ class CommentServiceTest {
         banned.setEmail("bbb@bbb.ru");
         banned.setBanned(true);
         userRepo.save(banned);
+
+        anotherUser.setName("Another user");
+        anotherUser.setEmail("an@an.ru");
+        userRepo.save(anotherUser);
 
         category.setName("category");
         categoryRepo.save(category);
@@ -91,18 +96,18 @@ class CommentServiceTest {
 
     @Test
     void getComments() {
-        assertEquals(0, service.getComments(initiator.getId()).size());
+        assertEquals(0, service.getComments(initiator.getId(), 0, 10).size());
         final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
-        assertEquals(1, service.getComments(initiator.getId()).size());
+        assertEquals(1, service.getComments(initiator.getId(), 0, 10).size());
     }
 
     @Test
     void removeComment() {
-        assertEquals(0, service.getComments(initiator.getId()).size());
+        assertEquals(0, service.getComments(initiator.getId(), 0, 10).size());
         final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
-        assertEquals(1, service.getComments(initiator.getId()).size());
+        assertEquals(1, service.getComments(initiator.getId(), 0, 10).size());
         service.removeComment(initiator.getId(), dto.getId());
-        assertEquals(0, service.getComments(initiator.getId()).size());
+        assertEquals(0, service.getComments(initiator.getId(), 0, 10).size());
     }
 
     @Test
@@ -119,17 +124,33 @@ class CommentServiceTest {
     @Test
     void testEditCommentByAnotherUser() {
         final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
-        assertThrows(IllegalStateException.class, () -> service.editComment(5L, dto.getId(), "new comment"));
+        assertThrows(IllegalStateException.class, () -> service.editComment(anotherUser.getId(), dto.getId(), "new comment"));
     }
 
     @Test
     void testDeleteCommentByAnotherUser() {
         final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
-        assertThrows(IllegalStateException.class, () -> service.removeComment(5L, dto.getId()));
+        assertThrows(IllegalStateException.class, () -> service.removeComment(anotherUser.getId(), dto.getId()));
     }
 
     @Test
     void testBannedUser() {
         assertThrows(IllegalStateException.class, () -> service.addComment(banned.getId(), event.getId(), "comment"));
+    }
+
+    @Test
+    void testEditCommentByBannedUser() {
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
+        initiator.setBanned(true);
+        userRepo.save(initiator);
+        assertThrows(IllegalStateException.class, () -> service.editComment(initiator.getId(), dto.getId(), "111"));
+    }
+
+    @Test
+    void testRemoveCommentByBannedUser() {
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
+        initiator.setBanned(true);
+        userRepo.save(initiator);
+        assertThrows(IllegalStateException.class, () -> service.removeComment(initiator.getId(), dto.getId()));
     }
 }

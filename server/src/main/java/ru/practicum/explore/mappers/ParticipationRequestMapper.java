@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static ru.practicum.explore.utils.DateTimeFormat.DateTimeFormat.FORMATTER;
+import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
 /**
  * Маппер для заявок на участие в событии

@@ -1,4 +1,4 @@
-package ru.practicum.stats.utils.DateTimeFormat;
+package ru.practicum.explore.utils;
 
 import java.time.format.DateTimeFormatter;
 

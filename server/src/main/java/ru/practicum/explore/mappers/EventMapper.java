@@ -12,7 +12,7 @@ import ru.practicum.explore.models.user.User;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.explore.utils.DateTimeFormat.DateTimeFormat.FORMATTER;
+import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
 /**
  * Маппер для событий

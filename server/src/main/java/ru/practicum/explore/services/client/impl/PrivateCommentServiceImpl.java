@@ -1,6 +1,8 @@
 package ru.practicum.explore.services.client.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.exceptions.ValidationException;
 import ru.practicum.explore.mappers.CommentMapper;
@@ -45,8 +47,12 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
             throw new ValidationException("Комментарий не может быть пустым");
         }
         Comment comment = commentRepo.findById(commentId).orElseThrow();
+        User author = userRepo.findById(userId).orElseThrow();
         if (comment.getAuthor().getId() != userId) {
             throw new IllegalStateException("Нет прав на редактирование комментария.");
+        }
+        if (author.isBanned()) {
+            throw new IllegalStateException("Вы не можете редактировать комментарии.");
         }
         comment.setText(text);
         comment.setEditedOn(LocalDateTime.now());
@@ -55,8 +61,9 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     }
 
     @Override
-    public List<CommentDto> getComments(long userId) {
-        List<Comment> comments = commentRepo.findCommentsByAuthorId(userId);
+    public List<CommentDto> getComments(long userId, int from, int size) {
+        Pageable pageable = PageRequest.of(from, size);
+        List<Comment> comments = commentRepo.findCommentsByAuthorId(userId, pageable);
         return comments.stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList());
@@ -65,9 +72,14 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     @Override
     public void removeComment(long userId, long commentId) {
         Comment comment = commentRepo.findById(commentId).orElseThrow();
+        User author = userRepo.findById(userId).orElseThrow();
         if (comment.getAuthor().getId() != userId) {
             throw new IllegalStateException("Нет прав на удаление комментария.");
         }
+        if (author.isBanned()) {
+            throw new IllegalStateException("Вы не можете удалять комментарии.");
+        }
         commentRepo.deleteById(commentId);
     }
+
 }

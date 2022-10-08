@@ -22,7 +22,7 @@ public class PrivateCommentController {
     /**
      * Добавление нового комментария
      */
-    @PostMapping(path = "/{eventId}")
+    @PostMapping(path = "/new/{eventId}")
     public CommentDto addNewComment(@PathVariable(value = "userId") long userId,
                                     @PathVariable(value = "eventId") long eventId,
                                     @RequestParam(value = "text") String text) {
@@ -44,10 +44,12 @@ public class PrivateCommentController {
     /**
      * Получение списка своих комментариев
      */
-    @GetMapping(path = "/own")
-    public List<CommentDto> getOwnComments(@PathVariable(value = "userId") long userId) {
+    @GetMapping
+    public List<CommentDto> getOwnComments(@PathVariable(value = "userId") long userId,
+                                           @RequestParam(value = "from", required = false, defaultValue = "0") int from,
+                                           @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
         log.info("PRIVATE: User={} get own comments", userId);
-        return commentService.getComments(userId);
+        return commentService.getComments(userId, from, size);
     }
 
     /**

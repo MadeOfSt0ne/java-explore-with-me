@@ -3,6 +3,8 @@ package ru.practicum.explore.models.comment.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.explore.models.event.Event;
+import ru.practicum.explore.models.user.User;
 
 /**
  * Дто комментария к событию
@@ -40,7 +42,6 @@ public class CommentDto {
      * Дто автора комментария
      */
     @Data
-    @AllArgsConstructor
     public static class UserDto {
         /**
          * Идентификатор
@@ -50,13 +51,17 @@ public class CommentDto {
          * Имя
          */
         private String name;
+
+        public UserDto(User author) {
+            this.id = author.getId();
+            this.name = author.getName();
+        }
     }
 
     /**
      * Дто события
      */
     @Data
-    @AllArgsConstructor
     public static class EventDto {
         /**
          * Идентификатор
@@ -66,5 +71,10 @@ public class CommentDto {
          * Заголовок
          */
         private String title;
+
+        public EventDto(Event event) {
+            this.id = event.getId();
+            this.title = event.getTitle();
+        }
     }
 }

@@ -110,7 +110,10 @@ public class Event {
      * Количество просмотров события
      */
     private int views;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    /**
+     * Комментарии к событию
+     */
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     @Formula("SELECT * FROM event_comments c WHERE c.event_id = id")
     private List<Comment> comments;

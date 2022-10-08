@@ -22,7 +22,7 @@ public interface PrivateCommentService {
     /**
      * Получение списка своих комментариев
      */
-    List<CommentDto> getComments(long userId);
+    List<CommentDto> getComments(long userId, int from, int size);
 
     /**
      * Удаление своего комментария

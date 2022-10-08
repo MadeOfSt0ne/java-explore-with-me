@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static ru.practicum.stats.utils.DateTimeFormat.DateTimeFormat.FORMATTER;
+import static ru.practicum.stats.utils.DateTimeFormat.FORMATTER;
 
 @Service
 @RequiredArgsConstructor

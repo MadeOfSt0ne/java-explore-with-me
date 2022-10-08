@@ -55,7 +55,7 @@ public class EventShortDto {
     /**
      * Комментарии
      */
-    private List<Comment> commentList;
+    private List<Comment> comments;
 
 
     /**

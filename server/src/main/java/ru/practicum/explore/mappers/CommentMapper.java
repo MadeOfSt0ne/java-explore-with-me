@@ -5,7 +5,7 @@ import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.models.event.Event;
 import ru.practicum.explore.models.user.User;
 
-import static ru.practicum.explore.utils.DateTimeFormat.DateTimeFormat.FORMATTER;
+import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
 /**
  * Маппер для комментариев
@@ -21,8 +21,8 @@ public class CommentMapper {
                 comment.getText(),
                 comment.getCreatedOn().format(FORMATTER),
                 comment.getEditedOn() == null ? null : comment.getEditedOn().format(FORMATTER),
-                new CommentDto.UserDto(comment.getAuthor().getId(), comment.getAuthor().getName()),
-                new CommentDto.EventDto(comment.getEvent().getId(), comment.getEvent().getTitle())
+                new CommentDto.UserDto(comment.getAuthor()),
+                new CommentDto.EventDto(comment.getEvent())
         );
     }
 
