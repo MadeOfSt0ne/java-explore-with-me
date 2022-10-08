@@ -8,6 +8,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.explore.models.category.Category;
 import ru.practicum.explore.models.comment.Comment;
 import ru.practicum.explore.models.comment.dto.CommentDto;
+import ru.practicum.explore.models.comment.dto.ShortCommentDto;
 import ru.practicum.explore.models.event.Event;
 import ru.practicum.explore.models.event.EventState;
 import ru.practicum.explore.models.user.User;
@@ -43,6 +44,7 @@ public class AdminCommentServiceTest {
     private final User initiator = new User();
     private final Category category = new Category();
     private final Comment comment = new Comment();
+    private final ShortCommentDto updated = new ShortCommentDto();
 
     @BeforeEach
     void setUp() {
@@ -72,11 +74,13 @@ public class AdminCommentServiceTest {
         comment.setAuthor(initiator);
         comment.setText("Comment");
         commentRepo.save(comment);
+
+        updated.setText("Updated comment");
     }
 
     @Test
     void testEditComment() {
-        final CommentDto dto = service.editComment(comment.getId(), "Updated comment");
+        final CommentDto dto = service.editComment(comment.getId(), updated);
         assertEquals("Updated comment", dto.getText());
         assertTrue(dto.getEditedOn().contains("2022"));
     }

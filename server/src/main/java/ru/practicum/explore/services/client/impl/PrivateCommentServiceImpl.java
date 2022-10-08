@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.explore.exceptions.ValidationException;
 import ru.practicum.explore.mappers.CommentMapper;
 import ru.practicum.explore.models.comment.Comment;
+import ru.practicum.explore.models.comment.dto.ShortCommentDto;
 import ru.practicum.explore.repository.CommentRepository;
 import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.models.event.Event;
@@ -28,8 +29,8 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     private final CommentRepository commentRepo;
 
     @Override
-    public CommentDto addComment(long userId, long eventId, String text) {
-        if (text.isBlank()) {
+    public CommentDto addComment(long userId, long eventId, ShortCommentDto shortCommentDto) {
+        if (shortCommentDto.getText().isBlank()) {
             throw new ValidationException("Комментарий не может быть пустым.");
         }
         User author = userRepo.findById(userId).orElseThrow();
@@ -37,13 +38,13 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
             throw new IllegalStateException("Вы не можете оставлять комментарии.");
         }
         Event event = eventRepo.findById(eventId).orElseThrow();
-        Comment comment = commentRepo.save(CommentMapper.toComment(text, author, event));
+        Comment comment = commentRepo.save(CommentMapper.toComment(shortCommentDto.getText(), author, event));
         return CommentMapper.toCommentDto(comment);
     }
 
     @Override
-    public CommentDto editComment(long userId, long commentId, String text) {
-        if (text.isBlank()) {
+    public CommentDto editComment(long userId, long commentId, ShortCommentDto shortCommentDto) {
+        if (shortCommentDto.getText().isBlank()) {
             throw new ValidationException("Комментарий не может быть пустым");
         }
         Comment comment = commentRepo.findById(commentId).orElseThrow();
@@ -54,7 +55,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         if (author.isBanned()) {
             throw new IllegalStateException("Вы не можете редактировать комментарии.");
         }
-        comment.setText(text);
+        comment.setText(shortCommentDto.getText());
         comment.setEditedOn(LocalDateTime.now());
         commentRepo.save(comment);
         return CommentMapper.toCommentDto(comment);

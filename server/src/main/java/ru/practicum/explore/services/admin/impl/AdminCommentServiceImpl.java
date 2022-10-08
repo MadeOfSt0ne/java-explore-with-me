@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.mappers.CommentMapper;
 import ru.practicum.explore.models.comment.Comment;
+import ru.practicum.explore.models.comment.dto.ShortCommentDto;
 import ru.practicum.explore.repository.CommentRepository;
 import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.services.admin.AdminCommentService;
@@ -17,9 +18,9 @@ public class AdminCommentServiceImpl implements AdminCommentService {
     private final CommentRepository commRepo;
 
     @Override
-    public CommentDto editComment(long commentId, String text) {
+    public CommentDto editComment(long commentId, ShortCommentDto shortCommentDto) {
         Comment comment = commRepo.findById(commentId).orElseThrow();
-        comment.setText(text);
+        comment.setText(shortCommentDto.getText());
         comment.setEditedOn(LocalDateTime.now());
         commRepo.save(comment);
         return CommentMapper.toCommentDto(comment);

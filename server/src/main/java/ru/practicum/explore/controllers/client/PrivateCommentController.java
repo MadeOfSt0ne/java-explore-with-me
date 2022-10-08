@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.models.comment.dto.CommentDto;
+import ru.practicum.explore.models.comment.dto.ShortCommentDto;
 import ru.practicum.explore.services.client.PrivateCommentService;
 
 import java.util.List;
@@ -25,9 +26,9 @@ public class PrivateCommentController {
     @PostMapping(path = "/new/{eventId}")
     public CommentDto addNewComment(@PathVariable(value = "userId") long userId,
                                     @PathVariable(value = "eventId") long eventId,
-                                    @RequestParam(value = "text") String text) {
-        log.info("PRIVATE: User={} add new comment={} to event={}", userId, text, eventId);
-        return commentService.addComment(userId, eventId, text);
+                                    @RequestBody ShortCommentDto shortCommentDto) {
+        log.info("PRIVATE: User={} add new comment={} to event={}", userId, shortCommentDto, eventId);
+        return commentService.addComment(userId, eventId, shortCommentDto);
     }
 
     /**
@@ -36,9 +37,9 @@ public class PrivateCommentController {
     @PatchMapping(path = "/{commentId}")
     public CommentDto updateComment(@PathVariable(value = "userId") long userId,
                                     @PathVariable(value = "commentId") long commentId,
-                                    @RequestParam(value = "text") String text) {
-        log.info("PRIVATE: User={} edit comment={} with text={}", userId, commentId, text);
-        return commentService.editComment(userId, commentId, text);
+                                    @RequestBody ShortCommentDto shortCommentDto) {
+        log.info("PRIVATE: User={} edit comment={} with text={}", userId, commentId, shortCommentDto);
+        return commentService.editComment(userId, commentId, shortCommentDto);
     }
 
     /**

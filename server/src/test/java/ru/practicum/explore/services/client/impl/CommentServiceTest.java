@@ -8,6 +8,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.explore.exceptions.ValidationException;
 import ru.practicum.explore.models.category.Category;
 import ru.practicum.explore.models.comment.dto.CommentDto;
+import ru.practicum.explore.models.comment.dto.ShortCommentDto;
 import ru.practicum.explore.models.event.Event;
 import ru.practicum.explore.models.event.EventState;
 import ru.practicum.explore.models.user.User;
@@ -42,6 +43,9 @@ class CommentServiceTest {
     private final User banned = new User();
     private final User anotherUser = new User();
     private final Category category = new Category();
+    private final ShortCommentDto shortCommentDto = new ShortCommentDto();
+    private final ShortCommentDto empty = new ShortCommentDto();
+    private final ShortCommentDto newComment = new ShortCommentDto();
 
     @BeforeEach
     void setUp() {
@@ -75,11 +79,15 @@ class CommentServiceTest {
         event.setLat(2.2f);
         event.setCategory(category);
         eventRepo.save(event);
+
+        shortCommentDto.setText("Some comment");
+        empty.setText("");
+        newComment.setText("New");
     }
 
     @Test
     void addComment() {
-        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), shortCommentDto);
         assertEquals(dto.getText(), "Some comment");
         assertEquals(dto.getUser().getName(), initiator.getName());
         assertEquals(dto.getEvent().getTitle(), event.getTitle());
@@ -87,9 +95,9 @@ class CommentServiceTest {
 
     @Test
     void editComment() {
-        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), shortCommentDto);
         assertNull(dto.getEditedOn());
-        final CommentDto edited = service.editComment(initiator.getId(), event.getId(), "New");
+        final CommentDto edited = service.editComment(initiator.getId(), event.getId(), newComment);
         assertEquals(edited.getText(), "New");
         assertNotNull(edited.getEditedOn());
     }
@@ -97,14 +105,14 @@ class CommentServiceTest {
     @Test
     void getComments() {
         assertEquals(0, service.getComments(initiator.getId(), 0, 10).size());
-        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), shortCommentDto);
         assertEquals(1, service.getComments(initiator.getId(), 0, 10).size());
     }
 
     @Test
     void removeComment() {
         assertEquals(0, service.getComments(initiator.getId(), 0, 10).size());
-        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), shortCommentDto);
         assertEquals(1, service.getComments(initiator.getId(), 0, 10).size());
         service.removeComment(initiator.getId(), dto.getId());
         assertEquals(0, service.getComments(initiator.getId(), 0, 10).size());
@@ -112,43 +120,43 @@ class CommentServiceTest {
 
     @Test
     void testAddEmptyComment() {
-        assertThrows(ValidationException.class, () -> service.addComment(initiator.getId(), event.getId(), ""));
+        assertThrows(ValidationException.class, () -> service.addComment(initiator.getId(), event.getId(), empty));
     }
 
     @Test
     void testEditCommentWithEmptyText() {
-        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
-        assertThrows(ValidationException.class, () -> service.editComment(initiator.getId(), dto.getId(), ""));
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), shortCommentDto);
+        assertThrows(ValidationException.class, () -> service.editComment(initiator.getId(), dto.getId(), empty));
     }
 
     @Test
     void testEditCommentByAnotherUser() {
-        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
-        assertThrows(IllegalStateException.class, () -> service.editComment(anotherUser.getId(), dto.getId(), "new comment"));
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), shortCommentDto);
+        assertThrows(IllegalStateException.class, () -> service.editComment(anotherUser.getId(), dto.getId(), newComment));
     }
 
     @Test
     void testDeleteCommentByAnotherUser() {
-        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), shortCommentDto);
         assertThrows(IllegalStateException.class, () -> service.removeComment(anotherUser.getId(), dto.getId()));
     }
 
     @Test
     void testBannedUser() {
-        assertThrows(IllegalStateException.class, () -> service.addComment(banned.getId(), event.getId(), "comment"));
+        assertThrows(IllegalStateException.class, () -> service.addComment(banned.getId(), event.getId(), shortCommentDto));
     }
 
     @Test
     void testEditCommentByBannedUser() {
-        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), shortCommentDto);
         initiator.setBanned(true);
         userRepo.save(initiator);
-        assertThrows(IllegalStateException.class, () -> service.editComment(initiator.getId(), dto.getId(), "111"));
+        assertThrows(IllegalStateException.class, () -> service.editComment(initiator.getId(), dto.getId(), newComment));
     }
 
     @Test
     void testRemoveCommentByBannedUser() {
-        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), "Some comment");
+        final CommentDto dto = service.addComment(initiator.getId(), event.getId(), shortCommentDto);
         initiator.setBanned(true);
         userRepo.save(initiator);
         assertThrows(IllegalStateException.class, () -> service.removeComment(initiator.getId(), dto.getId()));

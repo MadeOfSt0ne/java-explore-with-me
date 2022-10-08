@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.models.comment.dto.CommentDto;
+import ru.practicum.explore.models.comment.dto.ShortCommentDto;
 import ru.practicum.explore.services.admin.AdminCommentService;
 
 /**
@@ -22,9 +23,9 @@ public class AdminCommentController {
      */
     @PatchMapping
     public CommentDto updateComment(@PathVariable(value = "commentId") long commentId,
-                                    @RequestParam(value = "text") String text) {
-        log.info("ADMIN: Edit comment={} with text={}", commentId, text);
-        return commentService.editComment(commentId, text);
+                                    @RequestBody ShortCommentDto shortCommentDto) {
+        log.info("ADMIN: Edit comment={} with text={}", commentId, shortCommentDto);
+        return commentService.editComment(commentId, shortCommentDto);
     }
 
     /**

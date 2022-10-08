@@ -1,6 +1,7 @@
 package ru.practicum.explore.services.client;
 
 import ru.practicum.explore.models.comment.dto.CommentDto;
+import ru.practicum.explore.models.comment.dto.ShortCommentDto;
 
 import java.util.List;
 
@@ -12,12 +13,12 @@ public interface PrivateCommentService {
     /**
      * Добавление нового комментария
      */
-    CommentDto addComment(long userId, long eventId, String text);
+    CommentDto addComment(long userId, long eventId, ShortCommentDto shortCommentDto);
 
     /**
      * Редактирование своего комментария
      */
-    CommentDto editComment(long userId, long commentId, String text);
+    CommentDto editComment(long userId, long commentId, ShortCommentDto shortCommentDto);
 
     /**
      * Получение списка своих комментариев
