@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.explore.models.category.Category;
 import ru.practicum.explore.models.comment.Comment;
-import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.models.comment.dto.ShortCommentDto;
 import ru.practicum.explore.models.event.Event;
 import ru.practicum.explore.models.event.EventState;
@@ -16,7 +15,6 @@ import ru.practicum.explore.repository.CategoryRepository;
 import ru.practicum.explore.repository.CommentRepository;
 import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.repository.UserRepository;
-import ru.practicum.explore.services.admin.AdminCommentService;
 
 import java.time.LocalDateTime;
 
@@ -80,9 +78,8 @@ public class AdminCommentServiceTest {
 
     @Test
     void testEditComment() {
-        final CommentDto dto = service.editComment(comment.getId(), updated);
-        assertEquals("Updated comment", dto.getText());
-        assertTrue(dto.getEditedOn().contains("2022"));
+        final Comment comm = service.editComment(comment.getId(), updated);
+        assertEquals("Updated comment", comm.getText());
     }
 
     @Test

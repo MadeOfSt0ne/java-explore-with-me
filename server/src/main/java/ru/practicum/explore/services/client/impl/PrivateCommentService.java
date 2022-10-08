@@ -5,31 +5,26 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.exceptions.ValidationException;
-import ru.practicum.explore.mappers.CommentMapper;
 import ru.practicum.explore.models.comment.Comment;
 import ru.practicum.explore.models.comment.dto.ShortCommentDto;
-import ru.practicum.explore.repository.CommentRepository;
-import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.models.user.User;
+import ru.practicum.explore.repository.CommentRepository;
+import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.repository.UserRepository;
-import ru.practicum.explore.services.client.PrivateCommentService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PrivateCommentServiceImpl implements PrivateCommentService {
+public class PrivateCommentService {
 
     private final UserRepository userRepo;
     private final EventRepository eventRepo;
     private final CommentRepository commentRepo;
 
-    @Override
-    public CommentDto addComment(long userId, long eventId, ShortCommentDto shortCommentDto) {
+    public Comment addComment(long userId, long eventId, ShortCommentDto shortCommentDto) {
         if (shortCommentDto.getText().isBlank()) {
             throw new ValidationException("Комментарий не может быть пустым.");
         }
@@ -38,12 +33,14 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
             throw new IllegalStateException("Вы не можете оставлять комментарии.");
         }
         Event event = eventRepo.findById(eventId).orElseThrow();
-        Comment comment = commentRepo.save(CommentMapper.toComment(shortCommentDto.getText(), author, event));
-        return CommentMapper.toCommentDto(comment);
+        Comment comment = new Comment();
+        comment.setText(shortCommentDto.getText());
+        comment.setAuthor(author);
+        comment.setEvent(event);
+        return commentRepo.save(comment);
     }
 
-    @Override
-    public CommentDto editComment(long userId, long commentId, ShortCommentDto shortCommentDto) {
+    public Comment editComment(long userId, long commentId, ShortCommentDto shortCommentDto) {
         if (shortCommentDto.getText().isBlank()) {
             throw new ValidationException("Комментарий не может быть пустым");
         }
@@ -58,19 +55,14 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         comment.setText(shortCommentDto.getText());
         comment.setEditedOn(LocalDateTime.now());
         commentRepo.save(comment);
-        return CommentMapper.toCommentDto(comment);
+        return comment;
     }
 
-    @Override
-    public List<CommentDto> getComments(long userId, int from, int size) {
+    public List<Comment> getComments(long userId, int from, int size) {
         Pageable pageable = PageRequest.of(from, size);
-        List<Comment> comments = commentRepo.findCommentsByAuthorId(userId, pageable);
-        return comments.stream()
-                .map(CommentMapper::toCommentDto)
-                .collect(Collectors.toList());
+        return commentRepo.findCommentsByAuthorId(userId, pageable);
     }
 
-    @Override
     public void removeComment(long userId, long commentId) {
         Comment comment = commentRepo.findById(commentId).orElseThrow();
         User author = userRepo.findById(userId).orElseThrow();

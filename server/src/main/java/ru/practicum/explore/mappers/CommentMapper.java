@@ -2,8 +2,6 @@ package ru.practicum.explore.mappers;
 
 import ru.practicum.explore.models.comment.Comment;
 import ru.practicum.explore.models.comment.dto.CommentDto;
-import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.models.user.User;
 
 import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
@@ -26,14 +24,4 @@ public class CommentMapper {
         );
     }
 
-    /**
-     * Создание нового комментария
-     */
-    public static Comment toComment(String text, User author, Event event) {
-        Comment comment = new Comment();
-        comment.setText(text);
-        comment.setAuthor(author);
-        comment.setEvent(event);
-        return comment;
-    }
 }

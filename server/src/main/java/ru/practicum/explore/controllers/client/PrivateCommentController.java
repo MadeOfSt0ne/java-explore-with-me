@@ -3,11 +3,14 @@ package ru.practicum.explore.controllers.client;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.explore.mappers.CommentMapper;
+import ru.practicum.explore.models.comment.Comment;
 import ru.practicum.explore.models.comment.dto.CommentDto;
 import ru.practicum.explore.models.comment.dto.ShortCommentDto;
-import ru.practicum.explore.services.client.PrivateCommentService;
+import ru.practicum.explore.services.client.impl.PrivateCommentService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Публичный контроллер для работы с комментариями для авторизованных пользователей
@@ -28,7 +31,8 @@ public class PrivateCommentController {
                                     @PathVariable(value = "eventId") long eventId,
                                     @RequestBody ShortCommentDto shortCommentDto) {
         log.info("PRIVATE: User={} add new comment={} to event={}", userId, shortCommentDto, eventId);
-        return commentService.addComment(userId, eventId, shortCommentDto);
+        Comment comment = commentService.addComment(userId, eventId, shortCommentDto);
+        return CommentMapper.toCommentDto(comment);
     }
 
     /**
@@ -39,7 +43,8 @@ public class PrivateCommentController {
                                     @PathVariable(value = "commentId") long commentId,
                                     @RequestBody ShortCommentDto shortCommentDto) {
         log.info("PRIVATE: User={} edit comment={} with text={}", userId, commentId, shortCommentDto);
-        return commentService.editComment(userId, commentId, shortCommentDto);
+        Comment updated = commentService.editComment(userId, commentId, shortCommentDto);
+        return CommentMapper.toCommentDto(updated);
     }
 
     /**
@@ -50,7 +55,10 @@ public class PrivateCommentController {
                                            @RequestParam(value = "from", required = false, defaultValue = "0") int from,
                                            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
         log.info("PRIVATE: User={} get own comments", userId);
-        return commentService.getComments(userId, from, size);
+        List<Comment> comments = commentService.getComments(userId, from, size);
+        return comments.stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.toList());
     }
 
     /**

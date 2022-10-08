@@ -2,31 +2,26 @@ package ru.practicum.explore.services.admin.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.mappers.CommentMapper;
 import ru.practicum.explore.models.comment.Comment;
 import ru.practicum.explore.models.comment.dto.ShortCommentDto;
 import ru.practicum.explore.repository.CommentRepository;
-import ru.practicum.explore.models.comment.dto.CommentDto;
-import ru.practicum.explore.services.admin.AdminCommentService;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class AdminCommentServiceImpl implements AdminCommentService {
+public class AdminCommentService {
 
     private final CommentRepository commRepo;
 
-    @Override
-    public CommentDto editComment(long commentId, ShortCommentDto shortCommentDto) {
+    public Comment editComment(long commentId, ShortCommentDto shortCommentDto) {
         Comment comment = commRepo.findById(commentId).orElseThrow();
         comment.setText(shortCommentDto.getText());
         comment.setEditedOn(LocalDateTime.now());
         commRepo.save(comment);
-        return CommentMapper.toCommentDto(comment);
+        return comment;
     }
 
-    @Override
     public void removeComment(long commentId) {
         commRepo.deleteById(commentId);
     }
