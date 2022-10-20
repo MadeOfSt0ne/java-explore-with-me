@@ -1,7 +1,7 @@
 
 # Java Explore with me.
 ExploreWithMe project.  
-PR link: https://github.com/MadeOfSt0ne/java-explore-with-me/pull/1  
+
 1. Инструкция по запуску  
 * Для тестов обоих сервисов используется база данных H2, её настройки хранятся в папке /test/resources  
 Можно запускать тесты по одному, можно весь тестовый класс, можно "Run All Tests"
