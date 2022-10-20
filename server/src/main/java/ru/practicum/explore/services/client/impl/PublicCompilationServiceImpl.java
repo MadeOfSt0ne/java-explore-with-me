@@ -1,4 +1,4 @@
-package ru.practicum.explore.services.client;
+package ru.practicum.explore.services.client.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -7,8 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.mappers.CompilationMapper;
 import ru.practicum.explore.models.compilation.Compilation;
-import ru.practicum.explore.models.compilation.CompilationRepository;
+import ru.practicum.explore.repository.CompilationRepository;
 import ru.practicum.explore.models.compilation.dto.CompilationDto;
+import ru.practicum.explore.services.client.PublicCompilationService;
 
 import java.util.List;
 

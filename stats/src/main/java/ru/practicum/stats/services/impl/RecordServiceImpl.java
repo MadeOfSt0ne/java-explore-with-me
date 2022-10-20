@@ -1,21 +1,23 @@
-package ru.practicum.stats.services;
+package ru.practicum.stats.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.stats.models.record.RecordRepository;
-import ru.practicum.stats.models.record.dto.EndpointHit;
 import ru.practicum.stats.mappers.RecordMapper;
+import ru.practicum.stats.models.record.dto.EndpointHit;
 import ru.practicum.stats.models.record.dto.ViewStats;
+import ru.practicum.stats.repository.RecordRepository;
+import ru.practicum.stats.services.RecordService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+
+import static ru.practicum.stats.utils.DateTimeFormat.FORMATTER;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +25,6 @@ public class RecordServiceImpl implements RecordService {
 
     private final RecordRepository recordRepository;
     private final NamedParameterJdbcTemplate jdbcTemplate;
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public void addRecord(EndpointHit endpointHit) {

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.stats.models.record.Record;
-import ru.practicum.stats.models.record.RecordRepository;
+import ru.practicum.stats.repository.RecordRepository;
 import ru.practicum.stats.services.RecordService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,7 +54,7 @@ public class RecordServiceTest {
         assertNotNull(rec1);
         assertNotNull(rec2);
         assertNotNull(rec3);
-        assertEquals(2, service.getRecords("2022-09-01 10:10:10", "2022-10-01 10:10:10", uris, false).size());
+        assertEquals(2, service.getRecords("2022-09-01 10:10:10", "2022-10-20 10:10:10", uris, false).size());
         assertEquals(0, service.getRecords("2022-09-01 10:10:10", "2022-09-25 10:10:10", uris, false).size());
     }
 }

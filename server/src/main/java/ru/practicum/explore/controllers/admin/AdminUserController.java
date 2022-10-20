@@ -42,9 +42,27 @@ public class AdminUserController {
     /**
      * Удаление пользователя
      */
-    @DeleteMapping("/{userId}")
+    @DeleteMapping(path = "/{userId}")
     public void deleteUser(@PathVariable long userId) {
         log.info("ADMIN: Delete user id={}", userId);
         userService.deleteUser(userId);
+    }
+
+    /**
+     * Запретить пользователю оставлять комментарии
+     */
+    @PatchMapping(path = "/{userId}/ban")
+    public void banUser(@PathVariable(value = "userId") long userId) {
+        log.info("ADMIN: Ban user={}", userId);
+        userService.ban(userId);
+    }
+
+    /**
+     * Разрешить пользователю оставлять комментарии
+     */
+    @PatchMapping(path = "/{userId}/unban")
+    public void unbanUser(@PathVariable(value = "userId") long userId) {
+        log.info("ADMIN: Unban user={}", userId);
+        userService.unban(userId);
     }
 }

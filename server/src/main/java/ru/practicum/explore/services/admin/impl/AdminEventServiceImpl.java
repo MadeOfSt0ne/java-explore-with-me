@@ -1,4 +1,4 @@
-package ru.practicum.explore.services.admin;
+package ru.practicum.explore.services.admin.impl;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
@@ -6,22 +6,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.explore.mappers.EventMapper;
 import ru.practicum.explore.models.category.Category;
-import ru.practicum.explore.models.category.CategoryRepository;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.models.event.EventRepository;
 import ru.practicum.explore.models.event.EventState;
 import ru.practicum.explore.models.event.QEvent;
 import ru.practicum.explore.models.event.dto.AdminUpdateEventRequestDto;
 import ru.practicum.explore.models.event.dto.EventFullDto;
-import ru.practicum.explore.mappers.EventMapper;
+import ru.practicum.explore.repository.CategoryRepository;
+import ru.practicum.explore.repository.EventRepository;
+import ru.practicum.explore.services.admin.AdminEventService;
 import ru.practicum.explore.utils.RestTemplateClient.ViewsProcessor;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +32,6 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final EventRepository eventRepository;
     private final CategoryRepository catRepository;
     private final ViewsProcessor viewsProcessor;
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Метод возвращает полную информацию обо всех событиях подходящих под переданные условия

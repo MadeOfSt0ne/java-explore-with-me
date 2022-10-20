@@ -1,12 +1,15 @@
 package ru.practicum.explore.models.event;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.Formula;
 import ru.practicum.explore.models.category.Category;
+import ru.practicum.explore.models.comment.Comment;
 import ru.practicum.explore.models.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Событие
@@ -107,4 +110,11 @@ public class Event {
      * Количество просмотров события
      */
     private int views;
+    /**
+     * Комментарии к событию
+     */
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @Formula("SELECT * FROM event_comments c WHERE c.event_id = id")
+    private List<Comment> comments;
 }

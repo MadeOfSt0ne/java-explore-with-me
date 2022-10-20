@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.explore.models.compilation.Compilation;
-import ru.practicum.explore.models.compilation.CompilationRepository;
+import ru.practicum.explore.repository.CompilationRepository;
 import ru.practicum.explore.models.compilation.dto.CompilationDto;
 import ru.practicum.explore.models.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.services.admin.AdminCompilationService;
 import ru.practicum.explore.services.client.PublicCompilationService;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.models.event.EventRepository;
+import ru.practicum.explore.repository.EventRepository;
 
 import java.util.List;
 import java.util.Set;

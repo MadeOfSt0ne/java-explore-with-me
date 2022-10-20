@@ -1,4 +1,4 @@
-package ru.practicum.explore.services.client;
+package ru.practicum.explore.services.client.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -8,26 +8,28 @@ import org.springframework.stereotype.Service;
 import ru.practicum.explore.mappers.EventMapper;
 import ru.practicum.explore.mappers.ParticipationRequestMapper;
 import ru.practicum.explore.models.category.Category;
-import ru.practicum.explore.models.category.CategoryRepository;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.models.event.EventRepository;
 import ru.practicum.explore.models.event.EventState;
 import ru.practicum.explore.models.event.dto.EventFullDto;
 import ru.practicum.explore.models.event.dto.EventShortDto;
 import ru.practicum.explore.models.event.dto.NewEventDto;
 import ru.practicum.explore.models.event.dto.UpdateEventRequestDto;
 import ru.practicum.explore.models.participationRequest.ParticipationRequest;
-import ru.practicum.explore.models.participationRequest.ParticipationRequestRepository;
 import ru.practicum.explore.models.participationRequest.RequestStatus;
 import ru.practicum.explore.models.participationRequest.dto.ParticipationRequestDto;
 import ru.practicum.explore.models.user.User;
-import ru.practicum.explore.models.user.UserRepository;
+import ru.practicum.explore.repository.CategoryRepository;
+import ru.practicum.explore.repository.EventRepository;
+import ru.practicum.explore.repository.ParticipationRequestRepository;
+import ru.practicum.explore.repository.UserRepository;
+import ru.practicum.explore.services.client.PrivateEventService;
 import ru.practicum.explore.utils.RestTemplateClient.ViewsProcessor;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
 @Service
 @RequiredArgsConstructor
@@ -38,8 +40,6 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final UserRepository userRepository;
     private final ParticipationRequestRepository requestRepository;
     private final ViewsProcessor viewsProcessor;
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Получение событий, добавленных текущим пользователем
@@ -211,7 +211,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         // Если лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
         if (event.getConfirmedRequests() == event.getParticipantLimit()) {
             List<ParticipationRequest> requests = requestRepository.findByEventId(eventId);
-            requests.forEach(r -> r.setStatus(RequestStatus.CANCELLED));
+            requests.forEach(r -> r.setStatus(RequestStatus.REJECTED));
         }
         return ParticipationRequestMapper.toParticipationRequestDto(confirmed);
     }

@@ -11,15 +11,14 @@ import ru.practicum.explore.models.event.dto.NewEventDto;
 import ru.practicum.explore.models.user.User;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
 /**
  * Маппер для событий
  */
 @NoArgsConstructor
 public class EventMapper {
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Создание полного дто из события
@@ -41,7 +40,8 @@ public class EventMapper {
                 event.getEventState().toString(),
                 event.getTitle() == null ? "no title" : event.getTitle(),
                 event.getViews(),
-                new EventFullDto.Location(event.getLat(), event.getLon())
+                new EventFullDto.Location(event.getLat(), event.getLon()),
+                event.getComments()
         );
     }
 
@@ -58,7 +58,8 @@ public class EventMapper {
                 new EventShortDto.UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()),
                 event.isPaid(),
                 event.getTitle(),
-                event.getViews()
+                event.getViews(),
+                event.getComments()
         );
     }
 

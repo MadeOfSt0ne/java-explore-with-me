@@ -39,4 +39,6 @@ public class User {
     @Email
     @NotBlank
     private String email;
+    @Column(name = "banned")
+    private boolean banned;
 }

@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.explore.models.comment.Comment;
+
+import java.util.List;
 
 /**
  * Сокращенное дто события
@@ -49,6 +52,11 @@ public class EventShortDto {
      * Количество просмотров события
      */
     private int views;
+    /**
+     * Комментарии
+     */
+    private List<Comment> comments;
+
 
     /**
      * Дто категории

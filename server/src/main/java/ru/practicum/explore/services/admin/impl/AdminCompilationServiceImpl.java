@@ -1,14 +1,15 @@
-package ru.practicum.explore.services.admin;
+package ru.practicum.explore.services.admin.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.mappers.CompilationMapper;
 import ru.practicum.explore.models.compilation.Compilation;
-import ru.practicum.explore.models.compilation.CompilationRepository;
+import ru.practicum.explore.repository.CompilationRepository;
 import ru.practicum.explore.models.compilation.dto.CompilationDto;
 import ru.practicum.explore.models.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.models.event.EventRepository;
+import ru.practicum.explore.repository.EventRepository;
+import ru.practicum.explore.services.admin.AdminCompilationService;
 
 import java.util.Set;
 import java.util.stream.Collectors;

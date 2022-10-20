@@ -6,15 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.explore.models.category.Category;
-import ru.practicum.explore.models.category.CategoryRepository;
+import ru.practicum.explore.repository.CategoryRepository;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.models.event.EventRepository;
+import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.models.event.EventState;
 import ru.practicum.explore.models.event.dto.EventFullDto;
 import ru.practicum.explore.models.event.dto.PublicEventsRequest;
 import ru.practicum.explore.services.client.PublicEventService;
 import ru.practicum.explore.models.user.User;
-import ru.practicum.explore.models.user.UserRepository;
+import ru.practicum.explore.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
