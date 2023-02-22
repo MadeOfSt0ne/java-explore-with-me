@@ -1,6 +1,9 @@
 package ru.practicum.explore.services.client.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,12 +21,20 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "comments")
 public class PrivateCommentService {
 
     private final UserRepository userRepo;
     private final EventRepository eventRepo;
     private final CommentRepository commentRepo;
 
+    /**
+     * Добавление нового комментария
+     *
+     * @param userId id автора
+     * @param eventId id события
+     * @param shortCommentDto dto комментария
+     */
     public Comment addComment(long userId, long eventId, ShortCommentDto shortCommentDto) {
         if (shortCommentDto.getText().isBlank()) {
             throw new ValidationException("Комментарий не может быть пустым.");
@@ -40,6 +51,14 @@ public class PrivateCommentService {
         return commentRepo.save(comment);
     }
 
+    /**
+     * Редактирование созданного комментария
+     *
+     * @param userId id автора
+     * @param commentId id комментария
+     * @param shortCommentDto dto комментария
+     */
+    @CachePut(key = "#commentId")
     public Comment editComment(long userId, long commentId, ShortCommentDto shortCommentDto) {
         if (shortCommentDto.getText().isBlank()) {
             throw new ValidationException("Комментарий не может быть пустым");
@@ -58,11 +77,25 @@ public class PrivateCommentService {
         return comment;
     }
 
+    /**
+     * Получение списка своих комментариев
+     *
+     * @param userId id автора
+     * @param from офсет
+     * @param size размер списка
+     */
     public List<Comment> getComments(long userId, int from, int size) {
         Pageable pageable = PageRequest.of(from, size);
         return commentRepo.findCommentsByAuthorId(userId, pageable);
     }
 
+    /**
+     * Добавление нового комментария
+     *
+     * @param userId id автора
+     * @param commentId id комментария
+     */
+    @CacheEvict(key = "#commentId")
     public void removeComment(long userId, long commentId) {
         Comment comment = commentRepo.findById(commentId).orElseThrow();
         User author = userRepo.findById(userId).orElseThrow();

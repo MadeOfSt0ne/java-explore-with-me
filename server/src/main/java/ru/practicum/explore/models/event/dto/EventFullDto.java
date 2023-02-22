@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.explore.models.comment.Comment;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventFullDto {
+public class EventFullDto implements Serializable {
     /**
      * Краткое описание
      */
@@ -90,7 +91,7 @@ public class EventFullDto {
      */
     @Data
     @AllArgsConstructor
-    public static class CategoryDto {
+    public static class CategoryDto implements Serializable {
         /**
          * Идентификатор
          */
@@ -106,7 +107,7 @@ public class EventFullDto {
      */
     @Data
     @AllArgsConstructor
-    public static class UserShortDto {
+    public static class UserShortDto implements Serializable {
         /**
          * Идентификатор
          */
@@ -122,7 +123,7 @@ public class EventFullDto {
      */
     @Data
     @AllArgsConstructor
-    public static class Location {
+    public static class Location implements Serializable {
         /**
          * Долгота
          */

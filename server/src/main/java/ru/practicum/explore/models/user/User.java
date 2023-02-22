@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * Пользователь
@@ -18,7 +19,7 @@ import javax.validation.constraints.Size;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements Serializable {
     /**
      * Идентификатор
      */

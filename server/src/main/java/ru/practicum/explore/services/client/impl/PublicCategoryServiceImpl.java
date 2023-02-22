@@ -1,6 +1,8 @@
 package ru.practicum.explore.services.client.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +17,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "categories")
 public class PublicCategoryServiceImpl implements PublicCategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Cacheable(key = "#catId")
     @Override
     public CategoryDto getCategory(long catId) {
         Category category = categoryRepository.findById(catId).orElseThrow();
