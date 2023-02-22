@@ -12,7 +12,7 @@ pgAdmin4 создайте новую бд и внесите её названи�
 * [Основной сервис](https://github.com/MadeOfSt0ne/java-explore-with-me/blob/develop/ewm-main-service-spec.json)
 * [Сервис статистики](https://github.com/MadeOfSt0ne/java-explore-with-me/blob/develop/ewm-stats-service-spec.json)  
 3. Технологии  
-Java 11, Spring Boot, Maven, Hibernate, JUnit, PostgreSQL, QueryDsl, Lombok, RestTemplate, Docker
+Java 11, Spring Boot, Maven, Hibernate, JUnit, PostgreSQL, QueryDsl, Lombok, RestTemplate, Docker, Redis (cache)
 
   
 4. Схема баз данных
