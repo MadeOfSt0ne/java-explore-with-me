@@ -43,3 +43,18 @@ services:
       - POSTGRES_DB=server
       - POSTGRES_USER=main
       - POSTGRES_PASSWORD=password
+
+  ewm-redis:
+    container_name: ewm-redis
+    image: redis:5
+    ports:
+      - "6379:6379"
+    restart: always
+
+  ewm-cache:
+    build: ./server
+    ports:
+      - "6363:6363"
+    depends_on:
+      - ewm-db
+      - ewm-redis

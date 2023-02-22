@@ -3,8 +3,14 @@ package ru.practicum.explore.event.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.test.annotation.DirtiesContext;
+import redis.embedded.RedisServer;
 import ru.practicum.explore.models.category.Category;
 import ru.practicum.explore.repository.CategoryRepository;
 import ru.practicum.explore.models.event.Event;
@@ -21,6 +27,8 @@ import ru.practicum.explore.models.participationRequest.dto.ParticipationRequest
 import ru.practicum.explore.models.user.User;
 import ru.practicum.explore.repository.UserRepository;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
@@ -29,6 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@EnableCaching
+@ImportAutoConfiguration(classes = {CacheAutoConfiguration.class, RedisAutoConfiguration.class})
 class PrivateEventServiceImplTest {
 
     private final EventRepository eventRepo;
@@ -101,7 +111,7 @@ class PrivateEventServiceImplTest {
         newDto.setAnnotation("The new event!");
         newDto.setCategoryId(category.getId());
         newDto.setDescription("Some cool description");
-        newDto.setEventDate("2022-10-15 10:10:10");
+        newDto.setEventDate("2023-10-15 10:10:10");
         newDto.setPaid(true);
         newDto.setParticipantLimit(10);
         newDto.setRequestModeration(true);
@@ -111,7 +121,7 @@ class PrivateEventServiceImplTest {
         updateEventRequestDto.setEventId(event.getId());
         updateEventRequestDto.setAnnotation("New annotation");
         updateEventRequestDto.setDescription("New description");
-        updateEventRequestDto.setEventDate("2022-10-17 10:10:10");
+        updateEventRequestDto.setEventDate("2023-10-17 10:10:10");
 
         request.setEvent(event);
         request.setRequester(requester);
@@ -175,5 +185,25 @@ class PrivateEventServiceImplTest {
         assertEquals(RequestStatus.PENDING, request.getStatus());
         ParticipationRequestDto dto = privateService.rejectRequest(initiator.getId(), event.getId(), request.getId());
         assertEquals("REJECTED", dto.getStatus());
+    }
+
+    @TestConfiguration
+    static class EmbeddedRedisConfiguration {
+
+        private final RedisServer redisServer;
+
+        public EmbeddedRedisConfiguration() {
+            this.redisServer = new RedisServer();
+        }
+
+        @PostConstruct
+        public void startRedis() {
+            redisServer.start();
+        }
+
+        @PreDestroy
+        public void stopRedis() {
+            this.redisServer.stop();
+        }
     }
 }

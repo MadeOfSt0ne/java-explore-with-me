@@ -1,6 +1,10 @@
 package ru.practicum.explore.services.client.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +37,7 @@ import static ru.practicum.explore.utils.DateTimeFormat.FORMATTER;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "events")
 public class PrivateEventServiceImpl implements PrivateEventService {
 
     private final EventRepository eventRepository;
@@ -69,6 +74,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
      * @throws IllegalStateException если событие уже опубликовано или время начала раньше, чем через 2 часа от
      * текущего момента
      */
+    @CachePut(key = "#updateEventRequestDto.eventId")
     @Override
     public EventFullDto updateEvent(long userId, UpdateEventRequestDto updateEventRequestDto) {
         User initiator = userRepository.findById(userId).orElseThrow();
@@ -134,6 +140,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
      * @param eventId id события
      * @throws IllegalStateException если пользователь не является инициатором события
      */
+    @Cacheable(key = "#eventId")
     @Override
     public EventFullDto getEvent(long userId, long eventId) {
         User initiator = userRepository.findById(userId).orElseThrow();
@@ -153,6 +160,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
      * @throws IllegalStateException если событие уже опубликовано или отменено
      * или если пользователь не является инициатором события
      */
+    @CacheEvict(key = "#eventId")
     @Override
     public EventFullDto cancelEvent(long userId, long eventId) {
         User initiator = userRepository.findById(userId).orElseThrow();

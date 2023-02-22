@@ -8,6 +8,7 @@ import ru.practicum.explore.models.comment.Comment;
 import ru.practicum.explore.models.user.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Event {
+public class Event implements Serializable {
     /**
      * Идентификатор
      */

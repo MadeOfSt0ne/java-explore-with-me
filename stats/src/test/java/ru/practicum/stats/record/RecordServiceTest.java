@@ -54,7 +54,7 @@ public class RecordServiceTest {
         assertNotNull(rec1);
         assertNotNull(rec2);
         assertNotNull(rec3);
-        assertEquals(2, service.getRecords("2022-09-01 10:10:10", "2022-10-20 10:10:10", uris, false).size());
-        assertEquals(0, service.getRecords("2022-09-01 10:10:10", "2022-09-25 10:10:10", uris, false).size());
+        assertEquals(2, service.getRecords("2022-09-01 10:10:10", "2025-10-20 10:10:10", uris, false).size());
+        assertEquals(0, service.getRecords("2022-09-01 10:10:10", "2022-12-25 10:10:10", uris, false).size());
     }
 }

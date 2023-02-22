@@ -3,8 +3,13 @@ package ru.practicum.explore.services.client.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.annotation.DirtiesContext;
+import redis.embedded.RedisServer;
 import ru.practicum.explore.exceptions.ValidationException;
 import ru.practicum.explore.models.category.Category;
 import ru.practicum.explore.models.comment.Comment;
@@ -16,12 +21,15 @@ import ru.practicum.explore.repository.CategoryRepository;
 import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.repository.UserRepository;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@ImportAutoConfiguration(classes = {CacheAutoConfiguration.class, RedisAutoConfiguration.class})
 class CommentServiceTest {
 
     private final PrivateCommentService service;
@@ -159,5 +167,25 @@ class CommentServiceTest {
         initiator.setBanned(true);
         userRepo.save(initiator);
         assertThrows(IllegalStateException.class, () -> service.removeComment(initiator.getId(), comm.getId()));
+    }
+
+    @TestConfiguration
+    static class EmbeddedRedisConfiguration {
+
+        private final RedisServer redisServer;
+
+        public EmbeddedRedisConfiguration() {
+            this.redisServer = new RedisServer();
+        }
+
+        @PostConstruct
+        public void startRedis() {
+            redisServer.start();
+        }
+
+        @PreDestroy
+        public void stopRedis() {
+            this.redisServer.stop();
+        }
     }
 }

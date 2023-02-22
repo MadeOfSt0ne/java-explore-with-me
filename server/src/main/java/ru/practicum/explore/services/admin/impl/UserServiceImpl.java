@@ -5,10 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.models.user.User;
-import ru.practicum.explore.repository.UserRepository;
 import ru.practicum.explore.mappers.UserMapper;
+import ru.practicum.explore.models.user.User;
 import ru.practicum.explore.models.user.dto.UserDto;
+import ru.practicum.explore.repository.UserRepository;
 import ru.practicum.explore.services.admin.UserService;
 
 import java.util.Arrays;
@@ -23,8 +23,8 @@ public class UserServiceImpl implements UserService {
     /**
      * Получение списка пользователей
      *
-     * @param from количество элементов, которые нужно пропустить для формирования текущего набора
-     * @param size количество элементов в наборе
+     * @param from количество элементов, которые нужно пропустить для формирования текущего списка
+     * @param size количество элементов в списке
      */
     @Override
     public List<UserDto> getUsers(Long[] ids, int from, int size) {
@@ -60,6 +60,11 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    /**
+     * Запретить пользователю оставлять комментарии. По умолчанию всем разрешено оставлять комментарии
+     *
+     * @param userId id пользователя
+     */
     @Override
     public void ban(long userId) {
         User user = userRepository.findById(userId).orElseThrow();
@@ -67,6 +72,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Разрешить пользователю оставлять комментарии
+     *
+     * @param userId id пользователя
+     */
     @Override
     public void unban(long userId) {
         User user = userRepository.findById(userId).orElseThrow();

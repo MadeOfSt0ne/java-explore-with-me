@@ -6,6 +6,7 @@ import ru.practicum.explore.models.event.Event;
 import ru.practicum.explore.models.user.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comment {
+public class Comment implements Serializable {
 
     /**
      * Идентификатор
